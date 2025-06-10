@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'toolkit_colors.dart';
@@ -49,6 +50,24 @@ class ChatInputStyle {
       borderRadius: BorderRadius.circular(24),
     ),
   );
+
+  /// Provides a default light style.
+  factory ChatInputStyle.context(BuildContext context) {
+    final theme = Theme.of(context);
+    return ChatInputStyle(
+      textStyle: theme.textTheme.bodyMedium,
+      hintStyle: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+      hintText: 'Ask me anything...',
+      backgroundColor:
+          theme.inputDecorationTheme.fillColor ?? theme.colorScheme.surface,
+      decoration: BoxDecoration(
+        color:
+            theme.inputDecorationTheme.fillColor ?? theme.colorScheme.surface,
+        border: Border.all(width: 1, color: theme.dividerColor),
+        borderRadius: BorderRadius.circular(24),
+      ),
+    );
+  }
 
   /// The text style for the input text box.
   final TextStyle? textStyle;

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
+import 'package:flutter_ai_toolkit_example/_sample_messages.dart';
 
 class TestLlmProvider extends LlmProvider {
-  final List<ChatMessage> _history = [];
+  final List<ChatMessage> _history = sampleMessages.toList();
 
   @override
   Stream<String> generateStream(

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'toolkit_colors.dart';
@@ -52,6 +53,23 @@ class UserMessageStyle {
       ),
     ),
   );
+
+  /// Provides a style based on the current theme context.
+  factory UserMessageStyle.context(BuildContext context) {
+    final theme = Theme.of(context);
+    return UserMessageStyle(
+      textStyle: theme.textTheme.bodyMedium,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.zero,
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+      ),
+    );
+  }
 
   /// The text style for user messages.
   final TextStyle? textStyle;

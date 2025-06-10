@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_ai_toolkit/src/styles/toolkit_colors.dart';
 
 import 'action_button_style.dart';
 import 'action_button_type.dart';
@@ -10,7 +12,6 @@ import 'chat_input_style.dart';
 import 'file_attachment_style.dart';
 import 'llm_message_style.dart';
 import 'suggestion_style.dart';
-import 'toolkit_colors.dart';
 import 'user_message_style.dart';
 
 /// Style for the entire chat widget.
@@ -169,7 +170,59 @@ class LlmChatViewStyle {
     copyButtonStyle: ActionButtonStyle.defaultStyle(ActionButtonType.copy),
     editButtonStyle: ActionButtonStyle.defaultStyle(ActionButtonType.edit),
     actionButtonBarDecoration: BoxDecoration(
-      color: ToolkitColors.darkButtonBackground,
+      color: null,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    fileAttachmentStyle: FileAttachmentStyle.defaultStyle(),
+    suggestionStyle: SuggestionStyle.defaultStyle(),
+  );
+
+  /// Provides a from context theme style.
+  factory LlmChatViewStyle.context(BuildContext context) => LlmChatViewStyle(
+    backgroundColor: Theme.of(context).colorScheme.surface,
+    menuColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+    progressIndicatorColor: Theme.of(context).colorScheme.onSurfaceVariant,
+    userMessageStyle: UserMessageStyle.context(context),
+    llmMessageStyle: LlmMessageStyle.context(context),
+    chatInputStyle: ChatInputStyle.context(context),
+    addButtonStyle: ActionButtonStyle.context(context, ActionButtonType.add),
+    stopButtonStyle: ActionButtonStyle.context(context, ActionButtonType.stop),
+    recordButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.record,
+    ),
+    submitButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.submit,
+    ),
+    closeMenuButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.closeMenu,
+    ),
+    attachFileButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.attachFile,
+    ),
+    galleryButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.gallery,
+    ),
+    cameraButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.camera,
+    ),
+    closeButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.close,
+    ),
+    cancelButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.cancel,
+    ),
+    copyButtonStyle: ActionButtonStyle.context(context, ActionButtonType.copy),
+    editButtonStyle: ActionButtonStyle.context(context, ActionButtonType.edit),
+    actionButtonBarDecoration: BoxDecoration(
+      color: null,
       borderRadius: BorderRadius.circular(20),
     ),
     fileAttachmentStyle: FileAttachmentStyle.defaultStyle(),

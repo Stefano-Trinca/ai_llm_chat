@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
@@ -92,6 +93,30 @@ class LlmMessageStyle {
       ),
     ),
   );
+
+  /// Provides a style based on the current theme context.
+  factory LlmMessageStyle.context(BuildContext context) {
+    final theme = Theme.of(context);
+    return LlmMessageStyle(
+      icon: ToolkitIcons.spark_icon,
+      iconColor: theme.colorScheme.primary,
+      iconDecoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        shape: BoxShape.circle,
+      ),
+      markdownStyle: MarkdownStyleSheet.fromTheme(theme),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        // border: Border.all(color: theme.colorScheme.outline),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.zero,
+          topRight: Radius.circular(20),
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+      ),
+    );
+  }
 
   /// The icon to display for the LLM messages.
   final IconData? icon;

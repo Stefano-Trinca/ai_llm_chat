@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import 'action_button_type.dart';
 import 'tookit_icons.dart';
@@ -116,6 +116,85 @@ class ActionButtonStyle {
         color = ToolkitColors.whiteIcon;
         bgColor = ToolkitColors.greyBackground;
         text = 'Close Menu';
+    }
+
+    return ActionButtonStyle(
+      icon: icon,
+      iconColor: color,
+      iconDecoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+      text: text,
+      textStyle: textStyle,
+    );
+  }
+
+  /// Provides a style for icon buttons using the current Theme.
+  factory ActionButtonStyle.context(
+    BuildContext context,
+    ActionButtonType type,
+  ) {
+    final theme = Theme.of(context);
+    IconData icon;
+    Color color = theme.iconTheme.color ?? theme.colorScheme.onSurface;
+    Color bgColor =
+        theme.buttonTheme.colorScheme?.background ?? Colors.transparent;
+    String text;
+    TextStyle? textStyle = theme.textTheme.bodyMedium;
+    switch (type) {
+      case ActionButtonType.add:
+        icon = ToolkitIcons.add;
+        text = 'Add Attachment';
+        break;
+      case ActionButtonType.attachFile:
+        icon = ToolkitIcons.attach_file;
+        text = 'Attach File';
+        break;
+      case ActionButtonType.camera:
+        icon = ToolkitIcons.camera_alt;
+        text = 'Take Photo';
+        break;
+      case ActionButtonType.stop:
+        icon = ToolkitIcons.stop;
+        text = 'Stop';
+        break;
+      case ActionButtonType.close:
+        icon = ToolkitIcons.close;
+        color = theme.colorScheme.onPrimary;
+        bgColor = theme.colorScheme.primary;
+        text = 'Close';
+        break;
+      case ActionButtonType.cancel:
+        icon = ToolkitIcons.close;
+        text = 'Cancel';
+        break;
+      case ActionButtonType.copy:
+        icon = ToolkitIcons.content_copy;
+        text = 'Copy to Clipboard';
+        break;
+      case ActionButtonType.edit:
+        icon = ToolkitIcons.edit;
+        text = 'Edit Message';
+        break;
+      case ActionButtonType.gallery:
+        icon = ToolkitIcons.image;
+        text = 'Attach Image';
+        textStyle = theme.textTheme.bodyMedium;
+        break;
+      case ActionButtonType.record:
+        icon = ToolkitIcons.mic;
+        text = 'Record Audio';
+        break;
+      case ActionButtonType.submit:
+        icon = ToolkitIcons.submit_icon;
+        text = 'Submit Message';
+        break;
+      case ActionButtonType.disabled:
+        icon = ToolkitIcons.submit_icon;
+        text = '';
+        break;
+      case ActionButtonType.closeMenu:
+        icon = ToolkitIcons.close;
+        text = 'Close Menu';
+        break;
     }
 
     return ActionButtonStyle(
