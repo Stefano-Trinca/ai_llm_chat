@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_ai_toolkit/src/styles/toolkit_markdown.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import 'tookit_icons.dart';
@@ -62,26 +63,7 @@ class LlmMessageStyle {
       color: ToolkitColors.llmIconBackground,
       shape: BoxShape.circle,
     ),
-    markdownStyle: MarkdownStyleSheet(
-      a: ToolkitTextStyles.body1,
-      blockquote: ToolkitTextStyles.body1,
-      checkbox: ToolkitTextStyles.body1,
-      code: ToolkitTextStyles.code,
-      del: ToolkitTextStyles.body1,
-      em: ToolkitTextStyles.body1.copyWith(fontStyle: FontStyle.italic),
-      h1: ToolkitTextStyles.heading1,
-      h2: ToolkitTextStyles.heading2,
-      h3: ToolkitTextStyles.body1.copyWith(fontWeight: FontWeight.bold),
-      h4: ToolkitTextStyles.body1,
-      h5: ToolkitTextStyles.body1,
-      h6: ToolkitTextStyles.body1,
-      listBullet: ToolkitTextStyles.body1,
-      img: ToolkitTextStyles.body1,
-      strong: ToolkitTextStyles.body1.copyWith(fontWeight: FontWeight.bold),
-      p: ToolkitTextStyles.body1,
-      tableBody: ToolkitTextStyles.body1,
-      tableHead: ToolkitTextStyles.body1,
-    ),
+    markdownStyle: ToolkitMarkdown.defaultMarkdownStyleSheet,
     decoration: BoxDecoration(
       color: ToolkitColors.llmMessageBackground,
       border: Border.all(color: ToolkitColors.llmMessageOutline),
@@ -104,7 +86,7 @@ class LlmMessageStyle {
         color: theme.colorScheme.surfaceContainerHigh,
         shape: BoxShape.circle,
       ),
-      markdownStyle: MarkdownStyleSheet.fromTheme(theme),
+      markdownStyle: ToolkitMarkdown.ofContext(context),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHigh,
         // border: Border.all(color: theme.colorScheme.outline),
@@ -132,4 +114,21 @@ class LlmMessageStyle {
 
   /// The markdown style sheet for LLM messages.
   final MarkdownStyleSheet? markdownStyle;
+
+  /// Returns a copy of this LlmMessageStyle with the given fields replaced.
+  LlmMessageStyle copyWith({
+    IconData? icon,
+    Color? iconColor,
+    Decoration? iconDecoration,
+    Decoration? decoration,
+    MarkdownStyleSheet? markdownStyle,
+  }) {
+    return LlmMessageStyle(
+      icon: icon ?? this.icon,
+      iconColor: iconColor ?? this.iconColor,
+      iconDecoration: iconDecoration ?? this.iconDecoration,
+      decoration: decoration ?? this.decoration,
+      markdownStyle: markdownStyle ?? this.markdownStyle,
+    );
+  }
 }

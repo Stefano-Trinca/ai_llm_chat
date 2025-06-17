@@ -317,7 +317,8 @@ class _LlmChatViewState extends State<LlmChatView>
     assert(_pendingSttResponse != null);
     setState(() {
       // Preserve any existing attachments from the current input
-      _initialMessage = ChatMessage.user(response, attachments);
+      //todo: sistemare la creazione dei messaggi
+      _initialMessage = ChatMessage.user('', response, attachments);
       _pendingSttResponse = null;
     });
 
@@ -369,7 +370,8 @@ class _LlmChatViewState extends State<LlmChatView>
   }
 
   void _onSelectSuggestion(String suggestion) =>
-      setState(() => _initialMessage = ChatMessage.user(suggestion, []));
+  //todo: sistemare la creazione dei messaggi
+  setState(() => _initialMessage = ChatMessage.user('', suggestion, []));
 
   void _onHistoryChanged() {
     // if the history is cleared, clear the initial message

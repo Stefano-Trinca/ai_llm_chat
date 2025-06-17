@@ -189,6 +189,7 @@ class ActionButtonStyle {
         break;
       case ActionButtonType.disabled:
         icon = ToolkitIcons.submit_icon;
+        bgColor = Colors.transparent;
         text = '';
         break;
       case ActionButtonType.closeMenu:

@@ -58,6 +58,7 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
         final history = [
           if (showWelcomeMessage)
             ChatMessage(
+              id: '__welcome__',
               origin: MessageOrigin.llm,
               text: viewModel.welcomeMessage,
               attachments: [],

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_ai_toolkit/src/styles/toolkit_colors.dart';
 
 import 'action_button_style.dart';
@@ -195,6 +194,10 @@ class LlmChatViewStyle {
       context,
       ActionButtonType.submit,
     ),
+    disabledButtonStyle: ActionButtonStyle.context(
+      context,
+      ActionButtonType.disabled,
+    ),
     closeMenuButtonStyle: ActionButtonStyle.context(
       context,
       ActionButtonType.closeMenu,
@@ -294,4 +297,58 @@ class LlmChatViewStyle {
 
   /// Style for suggestions.
   final SuggestionStyle? suggestionStyle;
+
+  /// Returns a copy of this style with the given fields replaced with the new values.
+  LlmChatViewStyle copyWith({
+    Color? backgroundColor,
+    Color? menuColor,
+    Color? progressIndicatorColor,
+    UserMessageStyle? userMessageStyle,
+    LlmMessageStyle? llmMessageStyle,
+    ChatInputStyle? chatInputStyle,
+    ActionButtonStyle? addButtonStyle,
+    ActionButtonStyle? attachFileButtonStyle,
+    ActionButtonStyle? cameraButtonStyle,
+    ActionButtonStyle? stopButtonStyle,
+    ActionButtonStyle? closeButtonStyle,
+    ActionButtonStyle? cancelButtonStyle,
+    ActionButtonStyle? copyButtonStyle,
+    ActionButtonStyle? editButtonStyle,
+    ActionButtonStyle? galleryButtonStyle,
+    ActionButtonStyle? recordButtonStyle,
+    ActionButtonStyle? submitButtonStyle,
+    ActionButtonStyle? disabledButtonStyle,
+    ActionButtonStyle? closeMenuButtonStyle,
+    Decoration? actionButtonBarDecoration,
+    FileAttachmentStyle? fileAttachmentStyle,
+    SuggestionStyle? suggestionStyle,
+  }) {
+    return LlmChatViewStyle(
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      menuColor: menuColor ?? this.menuColor,
+      progressIndicatorColor:
+          progressIndicatorColor ?? this.progressIndicatorColor,
+      userMessageStyle: userMessageStyle ?? this.userMessageStyle,
+      llmMessageStyle: llmMessageStyle ?? this.llmMessageStyle,
+      chatInputStyle: chatInputStyle ?? this.chatInputStyle,
+      addButtonStyle: addButtonStyle ?? this.addButtonStyle,
+      attachFileButtonStyle:
+          attachFileButtonStyle ?? this.attachFileButtonStyle,
+      cameraButtonStyle: cameraButtonStyle ?? this.cameraButtonStyle,
+      stopButtonStyle: stopButtonStyle ?? this.stopButtonStyle,
+      closeButtonStyle: closeButtonStyle ?? this.closeButtonStyle,
+      cancelButtonStyle: cancelButtonStyle ?? this.cancelButtonStyle,
+      copyButtonStyle: copyButtonStyle ?? this.copyButtonStyle,
+      editButtonStyle: editButtonStyle ?? this.editButtonStyle,
+      galleryButtonStyle: galleryButtonStyle ?? this.galleryButtonStyle,
+      recordButtonStyle: recordButtonStyle ?? this.recordButtonStyle,
+      submitButtonStyle: submitButtonStyle ?? this.submitButtonStyle,
+      disabledButtonStyle: disabledButtonStyle ?? this.disabledButtonStyle,
+      closeMenuButtonStyle: closeMenuButtonStyle ?? this.closeMenuButtonStyle,
+      actionButtonBarDecoration:
+          actionButtonBarDecoration ?? this.actionButtonBarDecoration,
+      fileAttachmentStyle: fileAttachmentStyle ?? this.fileAttachmentStyle,
+      suggestionStyle: suggestionStyle ?? this.suggestionStyle,
+    );
+  }
 }

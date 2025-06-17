@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
@@ -56,7 +57,8 @@ class LlmMessageView extends StatelessWidget {
                         width: 20,
                         decoration: llmStyle.iconDecoration,
                         child: Icon(
-                          llmStyle.icon,
+                          // llmStyle.icon,
+                          Icons.rocket_launch,
                           color: llmStyle.iconColor,
                           size: 12,
                         ),

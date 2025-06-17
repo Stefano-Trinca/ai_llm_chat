@@ -64,8 +64,9 @@ class FirebaseProvider extends LlmProvider with ChangeNotifier {
     String prompt, {
     Iterable<Attachment> attachments = const [],
   }) async* {
-    final userMessage = ChatMessage.user(prompt, attachments);
-    final llmMessage = ChatMessage.llm();
+    //TODO: sistemare la creazione del messaggio
+    final userMessage = ChatMessage.user('', prompt, attachments);
+    final llmMessage = ChatMessage.llm(id: '');
     _history.addAll([userMessage, llmMessage]);
 
     final response = _generateStream(

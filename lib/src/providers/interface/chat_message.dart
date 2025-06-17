@@ -24,6 +24,7 @@ class ChatMessage {
   /// must not be null or empty. The [attachments] parameter is a list of any
   /// files or media attached to the message.
   ChatMessage({
+    required this.id,
     required this.origin,
     required this.text,
     required this.attachments,
@@ -41,6 +42,7 @@ class ChatMessage {
   ///   - 'data': The data of the attachment, either as a base64 encoded string
   ///     (for files) or a URL (for links).
   factory ChatMessage.fromJson(Map<String, dynamic> map) => ChatMessage(
+    id: map['id'] as String,
     origin: MessageOrigin.values.byName(map['origin'] as String),
     text: map['text'] as String,
     attachments: [
@@ -63,19 +65,30 @@ class ChatMessage {
   /// Factory constructor for creating an LLM-originated message.
   ///
   /// Creates a message with an empty text content and no attachments.
-  factory ChatMessage.llm() =>
-      ChatMessage(origin: MessageOrigin.llm, text: null, attachments: []);
+  factory ChatMessage.llm({required String id}) => ChatMessage(
+    id: id,
+    origin: MessageOrigin.llm,
+    text: null,
+    attachments: [],
+  );
 
   /// Factory constructor for creating a user-originated message.
   ///
   /// [text] is the content of the user's message.
   /// [attachments] are any files or media the user has attached to the message.
-  factory ChatMessage.user(String text, Iterable<Attachment> attachments) =>
-      ChatMessage(
-        origin: MessageOrigin.user,
-        text: text,
-        attachments: attachments,
-      );
+  factory ChatMessage.user(
+    String id,
+    String text,
+    Iterable<Attachment> attachments,
+  ) => ChatMessage(
+    id: id,
+    origin: MessageOrigin.user,
+    text: text,
+    attachments: attachments,
+  );
+
+  /// Unique identifier for the message.
+  final String id;
 
   /// Text content of the message.
   String? text;
@@ -94,6 +107,7 @@ class ChatMessage {
   @override
   String toString() =>
       'ChatMessage('
+      'id: $id, '
       'origin: $origin, '
       'text: $text, '
       'attachments: $attachments'
@@ -111,6 +125,7 @@ class ChatMessage {
   ///   - 'data': The data of the attachment, either as a base64 encoded string
   ///     (for files) or a URL (for links).
   Map<String, dynamic> toJson() => {
+    'id': id,
     'origin': origin.name,
     'text': text,
     'attachments': [

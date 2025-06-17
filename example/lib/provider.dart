@@ -10,10 +10,12 @@ class TestLlmProvider extends LlmProvider {
     String prompt, {
     Iterable<Attachment> attachments = const [],
   }) async* {
-    print(
-      'TestLlmProvider.generateStream > Generating stream for prompt: $prompt',
-    );
-    yield 'Test response for: $prompt';
+    String buffer = '';
+    for (int i = 0; i < prompt.length; i++) {
+      buffer += prompt[i];
+      yield buffer;
+      await Future.delayed(const Duration(milliseconds: 50));
+    }
   }
 
   @override
@@ -21,22 +23,49 @@ class TestLlmProvider extends LlmProvider {
     String prompt, {
     Iterable<Attachment> attachments = const [],
   }) async* {
-    print('TestLlmProvider.sendMessageStream > Sending message: $prompt');
-    _history.add(
-      ChatMessage(
-        origin: MessageOrigin.user,
-        text: prompt,
-        attachments: attachments,
-      ),
+    final userMessage = ChatMessage(
+      id: UniqueKey().toString(),
+      origin: MessageOrigin.user,
+      text: prompt,
+      attachments: attachments,
     );
-    yield 'Test reply to: $prompt';
-    _history.add(
-      ChatMessage(
-        origin: MessageOrigin.llm,
-        text: 'Test reply to: $prompt',
-        attachments: const [],
-      ),
+
+    final message = ChatMessage(
+      id: UniqueKey().toString(),
+      origin: MessageOrigin.llm,
+      text: '',
+      attachments: attachments,
     );
+
+    _history.addAll([userMessage, message]);
+
+    // Log start of sendMessageStream
+    await for (final chunk in generateStream(
+      prompt,
+      attachments: attachments,
+    )) {
+      // Update the message in _history with the same id
+      final index = _history.indexWhere((m) => m.id == message.id);
+      if (index != -1) {
+        _history[index] = ChatMessage(
+          id: message.id,
+          origin: message.origin,
+          text: chunk,
+          attachments: message.attachments,
+        );
+        notifyListeners();
+      }
+      yield chunk;
+    }
+
+    // // After streaming, add the LLM reply to history
+    // final llmReply = ChatMessage(
+    //   origin: MessageOrigin.llm,
+    //   text: 'Test reply to: $prompt',
+    //   attachments: const [],
+    // );
+    // _history.add(llmReply);
+    // notifyListeners();
   }
 
   @override

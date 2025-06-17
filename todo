@@ -1,0 +1,10 @@
+
+
+❌ sistemare la crezione dei messaggi llm e user per gli id.
+❌ sistemare la crezione del messaggio con id in #llm_chat_view
+❌ sistemare la crezione del messaggio con id in #echo_provider
+❌ sistemare la crezione del messaggio con id in #firebase_provider
+
+
+❌ opzione avatar su llm message
+❌ sistemare la massima larghezza del messaggio in relazione allo spazio che può occupare, o almeno il padding

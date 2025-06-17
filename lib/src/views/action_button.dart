@@ -49,7 +49,7 @@ class ActionButton extends StatelessWidget {
               ? Icon(style.icon, color: style.iconColor, size: size * 0.6)
               : Tooltip(
                 message: style.text,
-                textStyle: style.textStyle,
+                // textStyle: style.textStyle,
                 child: Icon(
                   style.icon,
                   color: style.iconColor,

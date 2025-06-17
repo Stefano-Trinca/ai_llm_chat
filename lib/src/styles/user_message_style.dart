@@ -2,8 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_ai_toolkit/src/styles/toolkit_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import 'toolkit_colors.dart';
 import 'toolkit_text_styles.dart';
@@ -12,7 +15,7 @@ import 'toolkit_text_styles.dart';
 @immutable
 class UserMessageStyle {
   /// Creates a UserMessageStyle.
-  const UserMessageStyle({this.textStyle, this.decoration});
+  const UserMessageStyle({this.textStyle, this.decoration, this.markdownStyle});
 
   /// Resolves the UserMessageStyle by combining the provided style with default
   /// values.
@@ -34,6 +37,7 @@ class UserMessageStyle {
     return UserMessageStyle(
       textStyle: style?.textStyle ?? defaultStyle.textStyle,
       decoration: style?.decoration ?? defaultStyle.decoration,
+      markdownStyle: style?.markdownStyle ?? defaultStyle.markdownStyle,
     );
   }
 
@@ -52,6 +56,7 @@ class UserMessageStyle {
         bottomRight: Radius.circular(20),
       ),
     ),
+    markdownStyle: ToolkitMarkdown.defaultMarkdownStyleSheet,
   );
 
   /// Provides a style based on the current theme context.
@@ -68,6 +73,7 @@ class UserMessageStyle {
           bottomRight: Radius.circular(20),
         ),
       ),
+      markdownStyle: ToolkitMarkdown.ofContext(context),
     );
   }
 
@@ -76,4 +82,7 @@ class UserMessageStyle {
 
   /// The decoration for user message bubbles.
   final Decoration? decoration;
+
+  /// The markdown style sheet for User messages.
+  final MarkdownStyleSheet? markdownStyle;
 }
