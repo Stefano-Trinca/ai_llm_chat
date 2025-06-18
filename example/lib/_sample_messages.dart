@@ -121,4 +121,18 @@ final List<ChatMessage> sampleMessages = [
         "\nCome posso aiutarti oggi?",
     attachments: const [],
   ),
+  ChatMessage(
+    id: '9',
+    origin: MessageOrigin.llm,
+    text: null,
+    statusMessage: 'Sto elaborando la tua richiesta...',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '9',
+    origin: MessageOrigin.llm,
+    text: 'questo è il risultato',
+    statusMessage: 'Sto elaborando la tua richiesta...',
+    attachments: const [],
+  ),
 ];

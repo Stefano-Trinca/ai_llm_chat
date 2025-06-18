@@ -26,6 +26,7 @@ dependencies:
   google_fonts: ^6.2.1
   image_picker: ^1.1.2
   mime: ^2.0.0
+  shimmer: ^3.0.0
   solar_icons: ^0.0.5
   universal_platform: ^1.1.0
   uuid: ^4.4.2

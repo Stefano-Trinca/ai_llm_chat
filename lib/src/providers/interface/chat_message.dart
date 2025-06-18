@@ -27,6 +27,7 @@ class ChatMessage {
     required this.id,
     required this.origin,
     required this.text,
+    this.statusMessage,
     required this.attachments,
   }) : assert(origin.isUser && text != null && text.isNotEmpty || origin.isLlm);
 
@@ -45,6 +46,7 @@ class ChatMessage {
     id: map['id'] as String,
     origin: MessageOrigin.values.byName(map['origin'] as String),
     text: map['text'] as String,
+    statusMessage: map['statusMessage'] as String?,
     attachments: [
       for (final attachment in map['attachments'] as List<dynamic>)
         switch (attachment['type'] as String) {
@@ -69,6 +71,7 @@ class ChatMessage {
     id: id,
     origin: MessageOrigin.llm,
     text: null,
+    statusMessage: null,
     attachments: [],
   );
 
@@ -84,6 +87,7 @@ class ChatMessage {
     id: id,
     origin: MessageOrigin.user,
     text: text,
+    statusMessage: null,
     attachments: attachments,
   );
 
@@ -96,13 +100,26 @@ class ChatMessage {
   /// The origin of the message (user or LLM).
   final MessageOrigin origin;
 
+  /// the status of the message, that can be te
+
   /// Any attachments associated with the message.
   final Iterable<Attachment> attachments;
+
+  /// the status message of the message, that can be used to display when the text is null
+  String? statusMessage;
 
   /// Appends additional text to the existing message content.
   ///
   /// This is typically used for LLM messages that are streamed in parts.
   void append(String text) => this.text = (this.text ?? '') + text;
+
+  /// Replace the currente text with the provided text.
+  void replace(String text) => this.text = text;
+
+  /// Replace the current status message with the provided text.
+  ///
+  /// if null the status message will be removed.
+  void replaceStatusMessage(String? text) => statusMessage = text;
 
   @override
   String toString() =>
@@ -110,6 +127,7 @@ class ChatMessage {
       'id: $id, '
       'origin: $origin, '
       'text: $text, '
+      'statusMessage: $statusMessage, '
       'attachments: $attachments'
       ')';
 
@@ -128,6 +146,7 @@ class ChatMessage {
     'id': id,
     'origin': origin.name,
     'text': text,
+    'statusMessage': statusMessage,
     'attachments': [
       for (final attachment in attachments)
         {

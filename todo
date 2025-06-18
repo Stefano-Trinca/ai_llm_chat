@@ -5,9 +5,13 @@
 ❌ sistemare la crezione del messaggio con id in #echo_provider
 ❌ sistemare la crezione del messaggio con id in #firebase_provider
 
+❌ chat view empty
+✅ input che si possa andare a capo
+✅ padding view chat view
+
 ✅ massima larghezza della chat
-❌ chat messagge con status
-❌ add the message under the input field
+✅ chat messagge con status
+✅ add the message under the input field
 
 ✅ opzione avatar su llm message
 ✅ sistemare la massima larghezza del messaggio in relazione allo spazio che può occupare, o almeno il padding

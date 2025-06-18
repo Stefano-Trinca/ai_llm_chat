@@ -16,7 +16,7 @@ class ChatView extends StatelessWidget {
       // advertisingMessage:
       //     'Questo assistente può commettere errori. Non fidarti ciecamente delle sue risposte.',
       style: LlmChatViewStyle.context(context).copyWith(
-        llmMessageStyle: LlmMessageStyle.context(context).copyWith(
+        llmMessageStyle: MessageStyle.contextLLM(context).copyWith(
           decoration: BoxDecoration(
             color: Colors.transparent,
             // border: Border.all(color: theme.colorScheme.outline),

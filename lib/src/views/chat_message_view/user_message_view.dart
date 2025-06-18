@@ -3,15 +3,13 @@
 // found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_ai_toolkit/src/views/chat_message_view/message_container_view.dart';
 import 'package:flutter_ai_toolkit/src/views/chat_message_view/message_row_view.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import '../../chat_view_model/chat_view_model_client.dart';
 import '../../providers/interface/chat_message.dart';
 import '../../styles/styles.dart';
-import 'adaptive_copy_text.dart';
 import 'avatar_message_view.dart';
-import 'hovering_buttons.dart';
 
 /// A widget that displays a user's message in a chat interface.
 ///
@@ -38,39 +36,22 @@ class UserMessageView extends StatelessWidget {
     builder: (context, viewModel, child) {
       final text = message.text!;
       final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
-      final userStyle = UserMessageStyle.resolve(chatStyle.userMessageStyle);
+      final userStyle =
+          chatStyle.userMessageStyle ?? MessageStyle.contextUser(context);
 
       final avatar =
           userStyle.showAvatar
               ? AvatarMessageView(style: userStyle.avatarStyle)
               : null;
 
-      final messageContainer = HoveringButtons(
+      final messageContainer = MessageContainerView(
+        text: text,
         isUserMessage: true,
         chatStyle: chatStyle,
-        clipboardText: text,
+        styleSheet: userStyle.markdownStyle,
         onEdit: onEdit,
-        child: DecoratedBox(
-          decoration: userStyle.decoration!,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 12,
-              bottom: 12,
-            ),
-            child: AdaptiveCopyText(
-              chatStyle: chatStyle,
-              clipboardText: text,
-              onEdit: onEdit,
-              child: MarkdownBody(
-                data: text,
-                selectable: false,
-                styleSheet: userStyle.markdownStyle,
-              ),
-            ),
-          ),
-        ),
+        responseBuilder: viewModel.responseBuilder,
+        statusMessage: message.statusMessage,
       );
 
       return MessageRowView(
@@ -81,67 +62,4 @@ class UserMessageView extends StatelessWidget {
       );
     },
   );
-
-  // @override
-  // Widget build(BuildContext context) => Column(
-  //   children: [
-  //     ...[
-  //       for (final attachment in message.attachments)
-  //         Padding(
-  //           padding: const EdgeInsets.only(bottom: 6),
-  //           child: Align(
-  //             alignment: Alignment.topRight,
-  //             child: SizedBox(
-  //               height: 80,
-  //               width: 200,
-  //               child: AttachmentView(attachment),
-  //             ),
-  //           ),
-  //         ),
-  //     ],
-  //     ChatViewModelClient(
-  //       builder: (context, viewModel, child) {
-  //         final text = message.text!;
-  //         final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
-  //         final userStyle = UserMessageStyle.resolve(
-  //           chatStyle.userMessageStyle,
-  //         );
-
-  //         return Align(
-  //           alignment: Alignment.topRight,
-  //           child: Padding(
-  //             padding: const EdgeInsets.only(right: 16),
-  //             child: HoveringButtons(
-  //               isUserMessage: true,
-  //               chatStyle: chatStyle,
-  //               clipboardText: text,
-  //               onEdit: onEdit,
-  //               child: DecoratedBox(
-  //                 decoration: userStyle.decoration!,
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.only(
-  //                     left: 16,
-  //                     right: 16,
-  //                     top: 12,
-  //                     bottom: 12,
-  //                   ),
-  //                   child: AdaptiveCopyText(
-  //                     chatStyle: chatStyle,
-  //                     clipboardText: text,
-  //                     onEdit: onEdit,
-  //                     child: MarkdownBody(
-  //                       data: text,
-  //                       selectable: false,
-  //                       styleSheet: userStyle.markdownStyle,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   ],
-  // );
 }

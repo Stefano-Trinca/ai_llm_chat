@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart' show CupertinoTextField;
 import 'package:flutter/material.dart'
     show Colors, InputBorder, InputDecoration, TextField, TextInputAction;
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../styles/toolkit_colors.dart';
@@ -11,7 +12,7 @@ import '../utility.dart';
 /// This widget will render either a [CupertinoTextField] or a [TextField]
 /// depending on whether the app is using Cupertino or Material design.
 @immutable
-class ChatTextField extends StatelessWidget {
+class ChatTextField extends StatefulWidget {
   /// Creates an adaptive text field.
   ///
   /// Many of the parameters are required to ensure consistent behavior
@@ -65,38 +66,85 @@ class ChatTextField extends StatelessWidget {
   final void Function(String text) onSubmitted;
 
   @override
+  State<ChatTextField> createState() => _ChatTextFieldState();
+}
+
+class _ChatTextFieldState extends State<ChatTextField> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller;
+    _focusNode = widget.focusNode;
+    _focusNode.onKeyEvent = _handleKeyEvent;
+  }
+
+  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+      if (HardwareKeyboard.instance.isShiftPressed) {
+        // Inserisci newline
+        final text = _controller.text;
+        final pos = _controller.selection.baseOffset;
+        _controller.text = text.replaceRange(pos, pos, '\n');
+        _controller.selection = TextSelection.collapsed(offset: pos + 1);
+      } else {
+        _sendMessage();
+      }
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  void _sendMessage() {
+    final text = _controller.text;
+    if (text.isNotEmpty) {
+      widget.onSubmitted(text);
+      _controller.clear();
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) =>
       isCupertinoApp(context)
           ? CupertinoTextField(
-            minLines: minLines,
-            maxLines: maxLines,
-            controller: controller,
-            autofocus: autofocus,
-            focusNode: focusNode,
-            onSubmitted: onSubmitted,
-            style: style,
-            placeholder: hintText,
-            placeholderStyle: hintStyle,
-            padding: hintPadding ?? EdgeInsets.zero,
+            minLines: widget.minLines,
+            maxLines: widget.maxLines,
+            controller: _controller,
+            autofocus: widget.autofocus,
+            focusNode: widget.focusNode,
+            // onSubmitted: onSubmitted,
+            style: widget.style,
+            placeholder: widget.hintText,
+            placeholderStyle: widget.hintStyle,
+            padding: widget.hintPadding ?? EdgeInsets.zero,
             decoration: BoxDecoration(
               border: Border.all(width: 0, color: ToolkitColors.transparent),
             ),
-            textInputAction: textInputAction,
+            textInputAction: widget.textInputAction,
           )
           : TextField(
-            minLines: minLines,
-            maxLines: maxLines,
-            controller: controller,
-            autofocus: autofocus,
-            focusNode: focusNode,
-            textInputAction: textInputAction,
-            onSubmitted: onSubmitted,
-            style: style,
+            minLines: widget.minLines,
+            maxLines: widget.maxLines,
+            controller: _controller,
+            autofocus: widget.autofocus,
+            focusNode: widget.focusNode,
+            textInputAction: widget.textInputAction,
+            // onSubmitted: onSubmitted,
+            style: widget.style,
             decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: hintText,
-              hintStyle: hintStyle,
-              contentPadding: hintPadding,
+              hintText: widget.hintText,
+              hintStyle: widget.hintStyle,
+              contentPadding: widget.hintPadding,
               isDense: false,
               focusColor: Colors.transparent,
               hoverColor: Colors.transparent,

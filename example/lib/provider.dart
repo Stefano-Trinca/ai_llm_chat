@@ -35,6 +35,7 @@ class TestLlmProvider extends LlmProvider {
       id: UniqueKey().toString(),
       origin: MessageOrigin.llm,
       text: null,
+      statusMessage: 'Sto cercando la risposta...',
       attachments: attachments,
     );
 
@@ -48,25 +49,11 @@ class TestLlmProvider extends LlmProvider {
       // Update the message in _history with the same id
       final index = _history.indexWhere((m) => m.id == message.id);
       if (index != -1) {
-        _history[index] = ChatMessage(
-          id: message.id,
-          origin: message.origin,
-          text: chunk,
-          attachments: message.attachments,
-        );
+        _history[index].replace(chunk);
         notifyListeners();
       }
       yield chunk;
     }
-
-    // // After streaming, add the LLM reply to history
-    // final llmReply = ChatMessage(
-    //   origin: MessageOrigin.llm,
-    //   text: 'Test reply to: $prompt',
-    //   attachments: const [],
-    // );
-    // _history.add(llmReply);
-    // notifyListeners();
   }
 
   @override
@@ -74,7 +61,6 @@ class TestLlmProvider extends LlmProvider {
 
   @override
   set history(Iterable<ChatMessage> history) {
-    print('TestLlmProvider.history > Setting new history');
     _history
       ..clear()
       ..addAll(history);

@@ -3,15 +3,9 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
 import 'package:flutter_ai_toolkit/src/styles/toolkit_colors.dart';
-
-import 'action_button_style.dart';
-import 'action_button_type.dart';
-import 'chat_input_style.dart';
-import 'file_attachment_style.dart';
-import 'llm_message_style.dart';
-import 'suggestion_style.dart';
-import 'user_message_style.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 /// Style for the entire chat widget.
 @immutable
@@ -21,9 +15,11 @@ class LlmChatViewStyle {
     this.backgroundColor,
     this.menuColor,
     this.maxWidth,
+    this.chatViewPadding,
     this.progressIndicatorColor,
     this.userMessageStyle,
     this.llmMessageStyle,
+    this.markdownBuilder,
     this.chatInputStyle,
     this.addButtonStyle,
     this.attachFileButtonStyle,
@@ -61,16 +57,18 @@ class LlmChatViewStyle {
       backgroundColor: style?.backgroundColor ?? defaultStyle.backgroundColor,
       menuColor: style?.menuColor ?? defaultStyle.menuColor,
       maxWidth: style?.maxWidth ?? defaultStyle.maxWidth,
+      chatViewPadding: style?.chatViewPadding ?? defaultStyle.chatViewPadding,
       progressIndicatorColor:
           style?.progressIndicatorColor ?? defaultStyle.progressIndicatorColor,
-      userMessageStyle: UserMessageStyle.resolve(
+      userMessageStyle: MessageStyle.resolve(
         style?.userMessageStyle,
         defaultStyle: defaultStyle.userMessageStyle,
       ),
-      llmMessageStyle: LlmMessageStyle.resolve(
+      llmMessageStyle: MessageStyle.resolve(
         style?.llmMessageStyle,
         defaultStyle: defaultStyle.llmMessageStyle,
       ),
+      markdownBuilder: style?.markdownBuilder ?? defaultStyle.markdownBuilder,
       chatInputStyle: ChatInputStyle.resolve(
         style?.chatInputStyle,
         defaultStyle: defaultStyle.chatInputStyle,
@@ -149,9 +147,11 @@ class LlmChatViewStyle {
     backgroundColor: ToolkitColors.containerBackground,
     menuColor: ToolkitColors.containerBackground,
     maxWidth: _defaultMaxWidth,
+    chatViewPadding: _defaultChatViewPadding,
     progressIndicatorColor: ToolkitColors.black,
-    userMessageStyle: UserMessageStyle.defaultStyle(),
-    llmMessageStyle: LlmMessageStyle.defaultStyle(),
+    userMessageStyle: MessageStyle.defaultUser(),
+    llmMessageStyle: MessageStyle.defaultLLM(),
+
     chatInputStyle: ChatInputStyle.defaultStyle(),
     addButtonStyle: ActionButtonStyle.defaultStyle(ActionButtonType.add),
     stopButtonStyle: ActionButtonStyle.defaultStyle(ActionButtonType.stop),
@@ -184,9 +184,10 @@ class LlmChatViewStyle {
     backgroundColor: Theme.of(context).colorScheme.surface,
     menuColor: Theme.of(context).colorScheme.surfaceContainerHigh,
     maxWidth: _defaultMaxWidth,
+    chatViewPadding: _defaultChatViewPadding,
     progressIndicatorColor: Theme.of(context).colorScheme.onSurfaceVariant,
-    userMessageStyle: UserMessageStyle.context(context),
-    llmMessageStyle: LlmMessageStyle.context(context),
+    userMessageStyle: MessageStyle.contextUser(context),
+    llmMessageStyle: MessageStyle.contextLLM(context),
     chatInputStyle: ChatInputStyle.context(context),
     addButtonStyle: ActionButtonStyle.context(context, ActionButtonType.add),
     stopButtonStyle: ActionButtonStyle.context(context, ActionButtonType.stop),
@@ -236,6 +237,66 @@ class LlmChatViewStyle {
     suggestionStyle: SuggestionStyle.defaultStyle(),
   );
 
+  /// Returns a copy of this style with the given fields replaced with the new values.
+  LlmChatViewStyle copyWith({
+    Color? backgroundColor,
+    Color? menuColor,
+    double? maxWidth,
+    EdgeInsets? chatViewPadding,
+    Color? progressIndicatorColor,
+    MessageStyle? userMessageStyle,
+    MessageStyle? llmMessageStyle,
+    MarkdownBody Function(BuildContext context, String text)? markdownBuilder,
+    ChatInputStyle? chatInputStyle,
+    ActionButtonStyle? addButtonStyle,
+    ActionButtonStyle? attachFileButtonStyle,
+    ActionButtonStyle? cameraButtonStyle,
+    ActionButtonStyle? stopButtonStyle,
+    ActionButtonStyle? closeButtonStyle,
+    ActionButtonStyle? cancelButtonStyle,
+    ActionButtonStyle? copyButtonStyle,
+    ActionButtonStyle? editButtonStyle,
+    ActionButtonStyle? galleryButtonStyle,
+    ActionButtonStyle? recordButtonStyle,
+    ActionButtonStyle? submitButtonStyle,
+    ActionButtonStyle? disabledButtonStyle,
+    ActionButtonStyle? closeMenuButtonStyle,
+    Decoration? actionButtonBarDecoration,
+    FileAttachmentStyle? fileAttachmentStyle,
+    SuggestionStyle? suggestionStyle,
+  }) {
+    return LlmChatViewStyle(
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      menuColor: menuColor ?? this.menuColor,
+      maxWidth: maxWidth ?? this.maxWidth,
+      markdownBuilder: markdownBuilder ?? this.markdownBuilder,
+      chatViewPadding: chatViewPadding ?? this.chatViewPadding,
+      progressIndicatorColor:
+          progressIndicatorColor ?? this.progressIndicatorColor,
+      userMessageStyle: userMessageStyle ?? this.userMessageStyle,
+      llmMessageStyle: llmMessageStyle ?? this.llmMessageStyle,
+      chatInputStyle: chatInputStyle ?? this.chatInputStyle,
+      addButtonStyle: addButtonStyle ?? this.addButtonStyle,
+      attachFileButtonStyle:
+          attachFileButtonStyle ?? this.attachFileButtonStyle,
+      cameraButtonStyle: cameraButtonStyle ?? this.cameraButtonStyle,
+      stopButtonStyle: stopButtonStyle ?? this.stopButtonStyle,
+      closeButtonStyle: closeButtonStyle ?? this.closeButtonStyle,
+      cancelButtonStyle: cancelButtonStyle ?? this.cancelButtonStyle,
+      copyButtonStyle: copyButtonStyle ?? this.copyButtonStyle,
+      editButtonStyle: editButtonStyle ?? this.editButtonStyle,
+      galleryButtonStyle: galleryButtonStyle ?? this.galleryButtonStyle,
+      recordButtonStyle: recordButtonStyle ?? this.recordButtonStyle,
+      submitButtonStyle: submitButtonStyle ?? this.submitButtonStyle,
+      disabledButtonStyle: disabledButtonStyle ?? this.disabledButtonStyle,
+      closeMenuButtonStyle: closeMenuButtonStyle ?? this.closeMenuButtonStyle,
+      actionButtonBarDecoration:
+          actionButtonBarDecoration ?? this.actionButtonBarDecoration,
+      fileAttachmentStyle: fileAttachmentStyle ?? this.fileAttachmentStyle,
+      suggestionStyle: suggestionStyle ?? this.suggestionStyle,
+    );
+  }
+
   /// Background color of the entire chat widget.
   final Color? backgroundColor;
 
@@ -249,14 +310,23 @@ class LlmChatViewStyle {
 
   static const double _defaultMaxWidth = 800;
 
+  /// the padding of the chat view messages
+  final EdgeInsets? chatViewPadding;
+
+  static const EdgeInsets _defaultChatViewPadding = EdgeInsets.only(top: 120);
+
   /// The color of the progress indicator.
   final Color? progressIndicatorColor;
 
   /// Style for user messages.
-  final UserMessageStyle? userMessageStyle;
+  final MessageStyle? userMessageStyle;
 
   /// Style for LLM messages.
-  final LlmMessageStyle? llmMessageStyle;
+  final MessageStyle? llmMessageStyle;
+
+  /// Builder for rendering Markdown text.
+  final MarkdownBody Function(BuildContext context, String text)?
+  markdownBuilder;
 
   /// Style for the input text box.
   final ChatInputStyle? chatInputStyle;
@@ -308,60 +378,4 @@ class LlmChatViewStyle {
 
   /// Style for suggestions.
   final SuggestionStyle? suggestionStyle;
-
-  /// Returns a copy of this style with the given fields replaced with the new values.
-  LlmChatViewStyle copyWith({
-    Color? backgroundColor,
-    Color? menuColor,
-    double? maxWidth,
-    Color? progressIndicatorColor,
-    UserMessageStyle? userMessageStyle,
-    LlmMessageStyle? llmMessageStyle,
-    ChatInputStyle? chatInputStyle,
-    ActionButtonStyle? addButtonStyle,
-    ActionButtonStyle? attachFileButtonStyle,
-    ActionButtonStyle? cameraButtonStyle,
-    ActionButtonStyle? stopButtonStyle,
-    ActionButtonStyle? closeButtonStyle,
-    ActionButtonStyle? cancelButtonStyle,
-    ActionButtonStyle? copyButtonStyle,
-    ActionButtonStyle? editButtonStyle,
-    ActionButtonStyle? galleryButtonStyle,
-    ActionButtonStyle? recordButtonStyle,
-    ActionButtonStyle? submitButtonStyle,
-    ActionButtonStyle? disabledButtonStyle,
-    ActionButtonStyle? closeMenuButtonStyle,
-    Decoration? actionButtonBarDecoration,
-    FileAttachmentStyle? fileAttachmentStyle,
-    SuggestionStyle? suggestionStyle,
-  }) {
-    return LlmChatViewStyle(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      menuColor: menuColor ?? this.menuColor,
-      maxWidth: maxWidth ?? this.maxWidth,
-      progressIndicatorColor:
-          progressIndicatorColor ?? this.progressIndicatorColor,
-      userMessageStyle: userMessageStyle ?? this.userMessageStyle,
-      llmMessageStyle: llmMessageStyle ?? this.llmMessageStyle,
-      chatInputStyle: chatInputStyle ?? this.chatInputStyle,
-      addButtonStyle: addButtonStyle ?? this.addButtonStyle,
-      attachFileButtonStyle:
-          attachFileButtonStyle ?? this.attachFileButtonStyle,
-      cameraButtonStyle: cameraButtonStyle ?? this.cameraButtonStyle,
-      stopButtonStyle: stopButtonStyle ?? this.stopButtonStyle,
-      closeButtonStyle: closeButtonStyle ?? this.closeButtonStyle,
-      cancelButtonStyle: cancelButtonStyle ?? this.cancelButtonStyle,
-      copyButtonStyle: copyButtonStyle ?? this.copyButtonStyle,
-      editButtonStyle: editButtonStyle ?? this.editButtonStyle,
-      galleryButtonStyle: galleryButtonStyle ?? this.galleryButtonStyle,
-      recordButtonStyle: recordButtonStyle ?? this.recordButtonStyle,
-      submitButtonStyle: submitButtonStyle ?? this.submitButtonStyle,
-      disabledButtonStyle: disabledButtonStyle ?? this.disabledButtonStyle,
-      closeMenuButtonStyle: closeMenuButtonStyle ?? this.closeMenuButtonStyle,
-      actionButtonBarDecoration:
-          actionButtonBarDecoration ?? this.actionButtonBarDecoration,
-      fileAttachmentStyle: fileAttachmentStyle ?? this.fileAttachmentStyle,
-      suggestionStyle: suggestionStyle ?? this.suggestionStyle,
-    );
-  }
 }

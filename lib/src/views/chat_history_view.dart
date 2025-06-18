@@ -70,6 +70,7 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
           behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
           child: ListView.builder(
             reverse: true,
+            padding: viewModel.style?.chatViewPadding,
             itemCount: history.length + (showSuggestions ? 1 : 0),
             itemBuilder: (context, index) {
               if (showSuggestions) {
