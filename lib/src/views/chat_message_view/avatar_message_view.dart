@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ai_toolkit/src/styles/avatar_message_style.dart';
+import '../../styles/avatar_message_style.dart';
 
 /// A widget that displays an avatar for the message view
 @immutable

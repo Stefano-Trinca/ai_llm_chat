@@ -1,4 +1,4 @@
-name: flutter_ai_toolkit_example
+name: ai_llm_chat_example
 description: >-
   Sample apps showing off various features of the Flutter AI Toolkit.
 publish_to: none
@@ -15,7 +15,7 @@ dependencies:
   flex_color_scheme: ^8.2.0
   flutter:
     sdk: flutter
-  flutter_ai_toolkit:
+  ai_llm_chat:
     path: ..
   flutter_markdown_plus: ^1.0.3
   future_builder_ex: ^5.0.0

@@ -4,9 +4,9 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_ai_toolkit/src/styles/avatar_message_style.dart';
-import 'package:flutter_ai_toolkit/src/styles/toolkit_markdown.dart';
-import 'package:flutter_ai_toolkit/src/styles/toolkit_text_styles.dart';
+import '../styles/avatar_message_style.dart';
+import '../styles/toolkit_markdown.dart';
+import '../styles/toolkit_text_styles.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import 'toolkit_colors.dart';

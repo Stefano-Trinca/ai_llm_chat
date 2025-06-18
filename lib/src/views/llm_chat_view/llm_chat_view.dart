@@ -89,7 +89,9 @@ class LlmChatView extends StatefulWidget {
     this.errorMessage = 'ERROR',
     this.enableAttachments = true,
     this.enableVoiceNotes = true,
+    this.enableCancel = true,
     this.advertisingMessage,
+    this.emptyBuilder,
     super.key,
   }) : viewModel = ChatViewModel(
          provider: provider,
@@ -100,6 +102,7 @@ class LlmChatView extends StatefulWidget {
          welcomeMessage: welcomeMessage,
          enableAttachments: enableAttachments,
          enableVoiceNotes: enableVoiceNotes,
+         enableCancel: enableCancel,
          advertisingMessage: advertisingMessage,
        );
 
@@ -143,8 +146,16 @@ class LlmChatView extends StatefulWidget {
   /// Defaults to 'ERROR'.
   final String errorMessage;
 
+  /// Whether to enable the cancel button in the chat input.
+  final bool enableCancel;
+
   /// An optional advertising message to display at the bottom of the chat view.
   final String? advertisingMessage;
+
+  /// Builder for an empty list of messages.
+  ///
+  /// this widget replace the list view with the messages when the history is empty.
+  final Widget Function(BuildContext context)? emptyBuilder;
 
   @override
   State<LlmChatView> createState() => _LlmChatViewState();
@@ -209,6 +220,7 @@ class _LlmChatViewState extends State<LlmChatView>
                                         ? _onEditMessage
                                         : null,
                                 onSelectSuggestion: _onSelectSuggestion,
+                                emptyBuilder: widget.emptyBuilder,
                               ),
                             ],
                           ),
@@ -269,7 +281,8 @@ class _LlmChatViewState extends State<LlmChatView>
     unawaited(_showLlmException(error));
   }
 
-  void _onCancelMessage() => _pendingPromptResponse?.cancel();
+  void _onCancelMessage() =>
+      widget.viewModel.enableCancel ? _pendingPromptResponse?.cancel() : null;
 
   void _onEditMessage(ChatMessage message) {
     assert(_pendingPromptResponse == null);

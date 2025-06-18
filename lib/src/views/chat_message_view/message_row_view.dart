@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
-
+import '../../providers/interface/attachments.dart';
 import '../attachment_view/attachment_view.dart';
 
 /// Defines the alignment options for a chat message row.

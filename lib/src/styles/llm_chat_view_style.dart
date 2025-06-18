@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
-import 'package:flutter_ai_toolkit/src/styles/toolkit_colors.dart';
+import '../styles/styles.dart';
+import '../styles/toolkit_colors.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 /// Style for the entire chat widget.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
-import 'package:flutter_ai_toolkit/src/utils/theme_utils.dart';
-import 'package:flutter_ai_toolkit/src/views/jumping_dots_progress_indicator/jumping_dots_progress_indicator.dart';
+import '../../utils/theme_utils.dart';
+import '../../styles/styles.dart';
+import '../../views/jumping_dots_progress_indicator/jumping_dots_progress_indicator.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:shimmer/shimmer.dart';
 

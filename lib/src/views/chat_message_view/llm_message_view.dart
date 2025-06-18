@@ -4,9 +4,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
-import 'package:flutter_ai_toolkit/src/views/chat_message_view/avatar_message_view.dart';
-import 'package:flutter_ai_toolkit/src/views/chat_message_view/message_row_view.dart';
+import '../../providers/interface/chat_message.dart';
+import '../../styles/styles.dart';
+import '../../views/chat_message_view/avatar_message_view.dart';
+import '../../views/chat_message_view/message_row_view.dart';
 
 import '../../chat_view_model/chat_view_model_client.dart';
 import 'message_container_view.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ai_toolkit/src/styles/toolkit_text_styles.dart';
+import '../styles/toolkit_text_styles.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 class ToolkitMarkdown {

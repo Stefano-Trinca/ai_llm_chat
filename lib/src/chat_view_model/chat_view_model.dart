@@ -34,6 +34,7 @@ class ChatViewModel {
     required this.messageSender,
     required this.enableAttachments,
     required this.enableVoiceNotes,
+    required this.enableCancel,
     required this.advertisingMessage,
   });
 
@@ -86,6 +87,9 @@ class ChatViewModel {
   /// will be disabled.
   final bool enableVoiceNotes;
 
+  /// Whether the cancel button is enabled in the chat input.
+  final bool enableCancel;
+
   /// An optional advertising message to display in the chat interface.
   final String? advertisingMessage;
 
@@ -103,6 +107,7 @@ class ChatViewModel {
           other.messageSender == messageSender &&
           other.enableAttachments == enableAttachments &&
           other.enableVoiceNotes == enableVoiceNotes &&
+          other.enableCancel == enableCancel &&
           other.advertisingMessage == advertisingMessage);
 
   // the following is best practices when overriding operator ==
@@ -116,6 +121,7 @@ class ChatViewModel {
     messageSender,
     enableAttachments,
     enableVoiceNotes,
+    enableCancel,
     advertisingMessage,
   );
 }

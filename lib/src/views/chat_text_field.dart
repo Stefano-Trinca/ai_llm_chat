@@ -101,7 +101,7 @@ class _ChatTextFieldState extends State<ChatTextField> {
     final text = _controller.text;
     if (text.isNotEmpty) {
       widget.onSubmitted(text);
-      _controller.clear();
+      // _controller.clear();
     }
   }
 

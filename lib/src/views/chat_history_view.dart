@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_ai_toolkit/src/views/chat_input/chat_suggestion_view.dart';
+import '../views/chat_input/chat_suggestion_view.dart';
 
 import '../chat_view_model/chat_view_model_client.dart';
 import '../providers/interface/chat_message.dart';
@@ -27,6 +27,7 @@ class ChatHistoryView extends StatefulWidget {
   const ChatHistoryView({
     this.onEditMessage,
     required this.onSelectSuggestion,
+    this.emptyBuilder,
     super.key,
   });
 
@@ -40,6 +41,11 @@ class ChatHistoryView extends StatefulWidget {
 
   /// The callback function to call when a suggestion is selected.
   final void Function(String suggestion) onSelectSuggestion;
+
+  /// Builder for an empty list of messages.
+  ///
+  /// this widget replace the list view with the messages when the history is empty.
+  final Widget Function(BuildContext context)? emptyBuilder;
 
   @override
   State<ChatHistoryView> createState() => _ChatHistoryViewState();
@@ -65,6 +71,11 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
             ),
           ...viewModel.provider.history,
         ];
+
+        // if empty and the empty builder is provided
+        if (history.isEmpty && widget.emptyBuilder != null) {
+          return widget.emptyBuilder!(context);
+        }
 
         return ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),

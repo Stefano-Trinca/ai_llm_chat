@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ai_toolkit/src/styles/tookit_icons.dart';
-import 'package:flutter_ai_toolkit/src/styles/toolkit_colors.dart';
-import 'package:flutter_ai_toolkit/src/utils/theme_utils.dart';
+import '../utils/theme_utils.dart';
+import '../styles/tookit_icons.dart';
+import '../styles/toolkit_colors.dart';
 
 /// A style class for customizing the appearance of avatar messages in a chat application.
 @immutable

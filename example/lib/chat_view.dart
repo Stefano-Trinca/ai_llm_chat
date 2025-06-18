@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
+import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
 import 'package:solar_icons/solar_icons.dart';
 
 import 'provider.dart';
@@ -13,6 +13,7 @@ class ChatView extends StatelessWidget {
       provider: TestLlmProvider(),
       enableAttachments: false,
       enableVoiceNotes: false,
+      enableCancel: false,
       // advertisingMessage:
       //     'Questo assistente può commettere errori. Non fidarti ciecamente delle sue risposte.',
       style: LlmChatViewStyle.context(context).copyWith(
@@ -41,6 +42,23 @@ class ChatView extends StatelessWidget {
           context,
         ).copyWith(hintText: 'Scrivi il tuo messaggio...'),
       ),
+      emptyBuilder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Assistente LLM',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Come posso aiutarti oggi?',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        );
+      },
     );
   }
 }

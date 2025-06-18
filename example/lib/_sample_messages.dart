@@ -1,4 +1,4 @@
-import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
+import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
 
 final List<ChatMessage> sampleMessages = [
   ChatMessage(

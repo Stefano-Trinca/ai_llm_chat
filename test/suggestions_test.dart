@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
-import 'package:flutter_ai_toolkit/src/views/chat_input/chat_suggestion_view.dart';
-import 'package:flutter_ai_toolkit/src/views/chat_text_field.dart';
+import '../views/chat_input/chat_suggestion_view.dart';
+import '../views/chat_text_field.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
