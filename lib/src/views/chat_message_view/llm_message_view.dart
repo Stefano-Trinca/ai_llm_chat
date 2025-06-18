@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_ai_toolkit/src/views/chat_message_view/avatar_message_view.dart';
+import 'package:flutter_ai_toolkit/src/views/chat_message_view/message_row_view.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import '../../chat_view_model/chat_view_model_client.dart';
@@ -34,79 +36,54 @@ class LlmMessageView extends StatelessWidget {
   final bool isWelcomeMessage;
 
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Flexible(
-        flex: 6,
-        child: Column(
-          children: [
-            ChatViewModelClient(
-              builder: (context, viewModel, child) {
-                final text = message.text;
-                final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
-                final llmStyle = LlmMessageStyle.resolve(
-                  chatStyle.llmMessageStyle,
-                );
+  Widget build(BuildContext context) => ChatViewModelClient(
+    builder: (context, viewModel, child) {
+      final text = message.text;
+      final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
+      final llmStyle = LlmMessageStyle.resolve(chatStyle.llmMessageStyle);
 
-                return Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Container(
-                        height: 20,
-                        width: 20,
-                        decoration: llmStyle.iconDecoration,
-                        child: Icon(
-                          // llmStyle.icon,
-                          Icons.rocket_launch,
-                          color: llmStyle.iconColor,
-                          size: 12,
-                        ),
-                      ),
+      final avatar =
+          llmStyle.showAvatar
+              ? AvatarMessageView(style: llmStyle.avatarStyle)
+              : null;
+
+      final messageContaner = HoveringButtons(
+        isUserMessage: false,
+        chatStyle: chatStyle,
+        clipboardText: text,
+        child: Container(
+          decoration: llmStyle.decoration,
+          padding: const EdgeInsets.all(8),
+          child:
+              text == null
+                  ? SizedBox(
+                    width: 40,
+                    child: JumpingDotsProgressIndicator(
+                      fontSize: 40,
+                      color: chatStyle.progressIndicatorColor!,
                     ),
-                    HoveringButtons(
-                      isUserMessage: false,
-                      chatStyle: chatStyle,
-                      clipboardText: text,
-                      child: Container(
-                        decoration: llmStyle.decoration,
-                        margin: const EdgeInsets.only(left: 28),
-                        padding: const EdgeInsets.all(8),
-                        child:
-                            text == null
-                                ? SizedBox(
-                                  width: 24,
-                                  child: JumpingDotsProgressIndicator(
-                                    fontSize: 24,
-                                    color: chatStyle.progressIndicatorColor!,
-                                  ),
-                                )
-                                : AdaptiveCopyText(
-                                  clipboardText: text,
-                                  chatStyle: chatStyle,
-                                  child:
-                                      isWelcomeMessage ||
-                                              viewModel.responseBuilder == null
-                                          ? MarkdownBody(
-                                            data: text,
-                                            selectable: false,
-                                            styleSheet: llmStyle.markdownStyle,
-                                          )
-                                          : viewModel.responseBuilder!(
-                                            context,
-                                            text,
-                                          ),
-                                ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
+                  )
+                  : AdaptiveCopyText(
+                    clipboardText: text,
+                    chatStyle: chatStyle,
+                    child:
+                        isWelcomeMessage || viewModel.responseBuilder == null
+                            ? MarkdownBody(
+                              data: text,
+                              selectable: false,
+                              styleSheet: llmStyle.markdownStyle,
+                            )
+                            : viewModel.responseBuilder!(context, text),
+                  ),
         ),
-      ),
-      const Flexible(flex: 2, child: SizedBox()),
-    ],
+      );
+
+      return MessageRowView(
+        align: MessageAlign.left,
+        messageFlex: (6, 1),
+        avatar: avatar,
+        messageContainer: messageContaner,
+      );
+    },
   );
 }

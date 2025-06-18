@@ -3,22 +3,19 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_ai_toolkit/src/styles/avatar_message_style.dart';
 import 'package:flutter_ai_toolkit/src/styles/toolkit_markdown.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
-import 'tookit_icons.dart';
 import 'toolkit_colors.dart';
-import 'toolkit_text_styles.dart';
 
 /// Style for LLM messages.
 @immutable
 class LlmMessageStyle {
   /// Creates an LlmMessageStyle.
   const LlmMessageStyle({
-    this.icon,
-    this.iconColor,
-    this.iconDecoration,
+    this.showAvatar = true,
+    this.avatarStyle,
     this.decoration,
     this.markdownStyle,
   });
@@ -44,11 +41,10 @@ class LlmMessageStyle {
   }) {
     defaultStyle ??= LlmMessageStyle.defaultStyle();
     return LlmMessageStyle(
-      icon: style?.icon ?? defaultStyle.icon,
-      iconColor: style?.iconColor ?? defaultStyle.iconColor,
-      iconDecoration: style?.iconDecoration ?? defaultStyle.iconDecoration,
-      markdownStyle: style?.markdownStyle ?? defaultStyle.markdownStyle,
+      showAvatar: style?.showAvatar ?? defaultStyle.showAvatar,
+      avatarStyle: style?.avatarStyle ?? defaultStyle.avatarStyle,
       decoration: style?.decoration ?? defaultStyle.decoration,
+      markdownStyle: style?.markdownStyle ?? defaultStyle.markdownStyle,
     );
   }
 
@@ -57,13 +53,8 @@ class LlmMessageStyle {
 
   /// Provides a default light style.
   factory LlmMessageStyle._lightStyle() => LlmMessageStyle(
-    icon: ToolkitIcons.spark_icon,
-    iconColor: ToolkitColors.darkIcon,
-    iconDecoration: const BoxDecoration(
-      color: ToolkitColors.llmIconBackground,
-      shape: BoxShape.circle,
-    ),
-    markdownStyle: ToolkitMarkdown.defaultMarkdownStyleSheet,
+    showAvatar: true,
+    avatarStyle: AvatarMessageStyle.defaultStyle(),
     decoration: BoxDecoration(
       color: ToolkitColors.llmMessageBackground,
       border: Border.all(color: ToolkitColors.llmMessageOutline),
@@ -74,19 +65,15 @@ class LlmMessageStyle {
         bottomRight: Radius.circular(20),
       ),
     ),
+    markdownStyle: ToolkitMarkdown.defaultMarkdownStyleSheet,
   );
 
   /// Provides a style based on the current theme context.
   factory LlmMessageStyle.context(BuildContext context) {
     final theme = Theme.of(context);
     return LlmMessageStyle(
-      icon: ToolkitIcons.spark_icon,
-      iconColor: theme.colorScheme.primary,
-      iconDecoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
-        shape: BoxShape.circle,
-      ),
-      markdownStyle: ToolkitMarkdown.ofContext(context),
+      showAvatar: true,
+      avatarStyle: AvatarMessageStyle.context(context),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHigh,
         // border: Border.all(color: theme.colorScheme.outline),
@@ -97,17 +84,15 @@ class LlmMessageStyle {
           bottomRight: Radius.circular(20),
         ),
       ),
+      markdownStyle: ToolkitMarkdown.ofContext(context),
     );
   }
 
-  /// The icon to display for the LLM messages.
-  final IconData? icon;
+  /// show the avatar for the LLM message.
+  final bool showAvatar;
 
-  /// The color of the icon.
-  final Color? iconColor;
-
-  /// The decoration for the icon.
-  final Decoration? iconDecoration;
+  /// Style of the avatar for the LLM message.
+  final AvatarMessageStyle? avatarStyle;
 
   /// The decoration for LLM message bubbles.
   final Decoration? decoration;
@@ -115,18 +100,18 @@ class LlmMessageStyle {
   /// The markdown style sheet for LLM messages.
   final MarkdownStyleSheet? markdownStyle;
 
+  ///
+
   /// Returns a copy of this LlmMessageStyle with the given fields replaced.
   LlmMessageStyle copyWith({
-    IconData? icon,
-    Color? iconColor,
-    Decoration? iconDecoration,
+    bool? showAvatar,
+    AvatarMessageStyle? avatarStyle,
     Decoration? decoration,
     MarkdownStyleSheet? markdownStyle,
   }) {
     return LlmMessageStyle(
-      icon: icon ?? this.icon,
-      iconColor: iconColor ?? this.iconColor,
-      iconDecoration: iconDecoration ?? this.iconDecoration,
+      showAvatar: showAvatar ?? this.showAvatar,
+      avatarStyle: avatarStyle ?? this.avatarStyle,
       decoration: decoration ?? this.decoration,
       markdownStyle: markdownStyle ?? this.markdownStyle,
     );

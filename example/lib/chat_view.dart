@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
+import 'package:solar_icons/solar_icons.dart';
 
 import 'provider.dart';
 
@@ -12,6 +13,8 @@ class ChatView extends StatelessWidget {
       provider: TestLlmProvider(),
       enableAttachments: false,
       enableVoiceNotes: false,
+      // advertisingMessage:
+      //     'Questo assistente può commettere errori. Non fidarti ciecamente delle sue risposte.',
       style: LlmChatViewStyle.context(context).copyWith(
         llmMessageStyle: LlmMessageStyle.context(context).copyWith(
           decoration: BoxDecoration(
@@ -24,7 +27,19 @@ class ChatView extends StatelessWidget {
               bottomRight: Radius.circular(20),
             ),
           ),
+          showAvatar: false,
         ),
+        submitButtonStyle: ActionButtonStyle.context(
+          context,
+          ActionButtonType.submit,
+        ).copyWith(icon: SolarIconsOutline.arrowToTopLeft),
+        disabledButtonStyle: ActionButtonStyle.context(
+          context,
+          ActionButtonType.disabled,
+        ).copyWith(icon: SolarIconsOutline.arrowToTopLeft),
+        chatInputStyle: ChatInputStyle.context(
+          context,
+        ).copyWith(hintText: 'Scrivi il tuo messaggio...'),
       ),
     );
   }

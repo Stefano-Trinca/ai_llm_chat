@@ -34,6 +34,7 @@ class ChatViewModel {
     required this.messageSender,
     required this.enableAttachments,
     required this.enableVoiceNotes,
+    required this.advertisingMessage,
   });
 
   /// The LLM provider for the chat interface.
@@ -85,6 +86,9 @@ class ChatViewModel {
   /// will be disabled.
   final bool enableVoiceNotes;
 
+  /// An optional advertising message to display in the chat interface.
+  final String? advertisingMessage;
+
   // The following is needed to support the
   // ChatViewModelProvider.updateShouldNotify implementation
   @override
@@ -98,7 +102,8 @@ class ChatViewModel {
           other.responseBuilder == responseBuilder &&
           other.messageSender == messageSender &&
           other.enableAttachments == enableAttachments &&
-          other.enableVoiceNotes == enableVoiceNotes);
+          other.enableVoiceNotes == enableVoiceNotes &&
+          other.advertisingMessage == advertisingMessage);
 
   // the following is best practices when overriding operator ==
   @override
@@ -111,5 +116,6 @@ class ChatViewModel {
     messageSender,
     enableAttachments,
     enableVoiceNotes,
+    advertisingMessage,
   );
 }

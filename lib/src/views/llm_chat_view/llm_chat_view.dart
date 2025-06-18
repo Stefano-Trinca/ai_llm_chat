@@ -89,6 +89,7 @@ class LlmChatView extends StatefulWidget {
     this.errorMessage = 'ERROR',
     this.enableAttachments = true,
     this.enableVoiceNotes = true,
+    this.advertisingMessage,
     super.key,
   }) : viewModel = ChatViewModel(
          provider: provider,
@@ -99,6 +100,7 @@ class LlmChatView extends StatefulWidget {
          welcomeMessage: welcomeMessage,
          enableAttachments: enableAttachments,
          enableVoiceNotes: enableVoiceNotes,
+         advertisingMessage: advertisingMessage,
        );
 
   /// Whether to enable file and image attachments in the chat input.
@@ -140,6 +142,9 @@ class LlmChatView extends StatefulWidget {
   ///
   /// Defaults to 'ERROR'.
   final String errorMessage;
+
+  /// An optional advertising message to display at the bottom of the chat view.
+  final String? advertisingMessage;
 
   @override
   State<LlmChatView> createState() => _LlmChatViewState();
@@ -184,39 +189,51 @@ class _LlmChatViewState extends State<LlmChatView>
               },
               child: Container(
                 color: chatStyle.backgroundColor,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          ChatHistoryView(
-                            // can only edit if we're not waiting on the LLM or if
-                            // we're not already editing an LLM response
-                            onEditMessage:
-                                _pendingPromptResponse == null &&
-                                        _associatedResponse == null
-                                    ? _onEditMessage
-                                    : null,
-                            onSelectSuggestion: _onSelectSuggestion,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: chatStyle.maxWidth ?? 800,
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              ChatHistoryView(
+                                // can only edit if we're not waiting on the LLM or if
+                                // we're not already editing an LLM response
+                                onEditMessage:
+                                    _pendingPromptResponse == null &&
+                                            _associatedResponse == null
+                                        ? _onEditMessage
+                                        : null,
+                                onSelectSuggestion: _onSelectSuggestion,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        ChatInput(
+                          initialMessage: _initialMessage,
+                          autofocus: widget.viewModel.suggestions.isEmpty,
+                          onCancelEdit:
+                              _associatedResponse != null
+                                  ? _onCancelEdit
+                                  : null,
+                          onSendMessage: _onSendMessage,
+                          onCancelMessage:
+                              _pendingPromptResponse == null
+                                  ? null
+                                  : _onCancelMessage,
+                          onTranslateStt: _onTranslateStt,
+                          onCancelStt:
+                              _pendingSttResponse == null ? null : _onCancelStt,
+                          advertisingMessage:
+                              widget.viewModel.advertisingMessage,
+                        ),
+                      ],
                     ),
-                    ChatInput(
-                      initialMessage: _initialMessage,
-                      autofocus: widget.viewModel.suggestions.isEmpty,
-                      onCancelEdit:
-                          _associatedResponse != null ? _onCancelEdit : null,
-                      onSendMessage: _onSendMessage,
-                      onCancelMessage:
-                          _pendingPromptResponse == null
-                              ? null
-                              : _onCancelMessage,
-                      onTranslateStt: _onTranslateStt,
-                      onCancelStt:
-                          _pendingSttResponse == null ? null : _onCancelStt,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),

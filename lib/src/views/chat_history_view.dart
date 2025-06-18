@@ -66,43 +66,46 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
           ...viewModel.provider.history,
         ];
 
-        return ListView.builder(
-          reverse: true,
-          itemCount: history.length + (showSuggestions ? 1 : 0),
-          itemBuilder: (context, index) {
-            if (showSuggestions) {
-              index -= showWelcomeMessage ? 1 : 0;
-              if (index == history.length - (showWelcomeMessage ? 2 : 0)) {
-                return ChatSuggestionsView(
-                  suggestions: viewModel.suggestions,
-                  onSelectSuggestion: widget.onSelectSuggestion,
-                );
+        return ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: ListView.builder(
+            reverse: true,
+            itemCount: history.length + (showSuggestions ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (showSuggestions) {
+                index -= showWelcomeMessage ? 1 : 0;
+                if (index == history.length - (showWelcomeMessage ? 2 : 0)) {
+                  return ChatSuggestionsView(
+                    suggestions: viewModel.suggestions,
+                    onSelectSuggestion: widget.onSelectSuggestion,
+                  );
+                }
               }
-            }
-            final messageIndex = history.length - index - 1;
-            final message = history[messageIndex];
-            final isLastUserMessage =
-                message.origin.isUser && messageIndex >= history.length - 2;
-            final canEdit = isLastUserMessage && widget.onEditMessage != null;
-            final isUser = message.origin.isUser;
+              final messageIndex = history.length - index - 1;
+              final message = history[messageIndex];
+              final isLastUserMessage =
+                  message.origin.isUser && messageIndex >= history.length - 2;
+              final canEdit = isLastUserMessage && widget.onEditMessage != null;
+              final isUser = message.origin.isUser;
 
-            return Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child:
-                  isUser
-                      ? UserMessageView(
-                        message,
-                        onEdit:
-                            canEdit
-                                ? () => widget.onEditMessage?.call(message)
-                                : null,
-                      )
-                      : LlmMessageView(
-                        message,
-                        isWelcomeMessage: messageIndex == 0,
-                      ),
-            );
-          },
+              return Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child:
+                    isUser
+                        ? UserMessageView(
+                          message,
+                          onEdit:
+                              canEdit
+                                  ? () => widget.onEditMessage?.call(message)
+                                  : null,
+                        )
+                        : LlmMessageView(
+                          message,
+                          isWelcomeMessage: messageIndex == 0,
+                        ),
+              );
+            },
+          ),
         );
       },
     ),

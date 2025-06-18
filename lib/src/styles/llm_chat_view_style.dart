@@ -20,6 +20,7 @@ class LlmChatViewStyle {
   const LlmChatViewStyle({
     this.backgroundColor,
     this.menuColor,
+    this.maxWidth,
     this.progressIndicatorColor,
     this.userMessageStyle,
     this.llmMessageStyle,
@@ -59,6 +60,7 @@ class LlmChatViewStyle {
     return LlmChatViewStyle(
       backgroundColor: style?.backgroundColor ?? defaultStyle.backgroundColor,
       menuColor: style?.menuColor ?? defaultStyle.menuColor,
+      maxWidth: style?.maxWidth ?? defaultStyle.maxWidth,
       progressIndicatorColor:
           style?.progressIndicatorColor ?? defaultStyle.progressIndicatorColor,
       userMessageStyle: UserMessageStyle.resolve(
@@ -146,6 +148,7 @@ class LlmChatViewStyle {
   factory LlmChatViewStyle._lightStyle() => LlmChatViewStyle(
     backgroundColor: ToolkitColors.containerBackground,
     menuColor: ToolkitColors.containerBackground,
+    maxWidth: _defaultMaxWidth,
     progressIndicatorColor: ToolkitColors.black,
     userMessageStyle: UserMessageStyle.defaultStyle(),
     llmMessageStyle: LlmMessageStyle.defaultStyle(),
@@ -180,6 +183,7 @@ class LlmChatViewStyle {
   factory LlmChatViewStyle.context(BuildContext context) => LlmChatViewStyle(
     backgroundColor: Theme.of(context).colorScheme.surface,
     menuColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+    maxWidth: _defaultMaxWidth,
     progressIndicatorColor: Theme.of(context).colorScheme.onSurfaceVariant,
     userMessageStyle: UserMessageStyle.context(context),
     llmMessageStyle: LlmMessageStyle.context(context),
@@ -237,6 +241,13 @@ class LlmChatViewStyle {
 
   /// The color of the menu.
   final Color? menuColor;
+
+  /// max width of the chat widget.
+  ///
+  /// default is 800.
+  final double? maxWidth;
+
+  static const double _defaultMaxWidth = 800;
 
   /// The color of the progress indicator.
   final Color? progressIndicatorColor;
@@ -302,6 +313,7 @@ class LlmChatViewStyle {
   LlmChatViewStyle copyWith({
     Color? backgroundColor,
     Color? menuColor,
+    double? maxWidth,
     Color? progressIndicatorColor,
     UserMessageStyle? userMessageStyle,
     LlmMessageStyle? llmMessageStyle,
@@ -326,6 +338,7 @@ class LlmChatViewStyle {
     return LlmChatViewStyle(
       backgroundColor: backgroundColor ?? this.backgroundColor,
       menuColor: menuColor ?? this.menuColor,
+      maxWidth: maxWidth ?? this.maxWidth,
       progressIndicatorColor:
           progressIndicatorColor ?? this.progressIndicatorColor,
       userMessageStyle: userMessageStyle ?? this.userMessageStyle,

@@ -72,7 +72,7 @@ class TextOrAudioInput extends StatelessWidget {
           bottom: 8,
         ),
         child: DecoratedBox(
-          decoration: _inputStyle.decoration!,
+          decoration: _inputStyle.fieldDecoration!,
           child: ConstrainedBox(
             constraints: const BoxConstraints(
               minHeight: _minInputHeight,

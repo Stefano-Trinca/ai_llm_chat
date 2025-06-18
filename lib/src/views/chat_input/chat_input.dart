@@ -39,6 +39,7 @@ class ChatInput extends StatefulWidget {
     this.onCancelMessage,
     this.onCancelStt,
     this.autofocus = true,
+    this.advertisingMessage,
     super.key,
   }) : assert(
          !(onCancelMessage != null && onCancelStt != null),
@@ -80,6 +81,9 @@ class ChatInput extends StatefulWidget {
 
   /// Whether the input should automatically focus
   final bool autofocus;
+
+  /// An optional advertising message to display under the input field.
+  final String? advertisingMessage;
 
   @override
   State<ChatInput> createState() => _ChatInputState();
@@ -145,63 +149,80 @@ class _ChatInputState extends State<ChatInput> {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-    color: _inputStyle!.backgroundColor,
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      children: [
-        AttachmentsView(
-          attachments: _attachments,
-          onRemove: onRemoveAttachment,
-        ),
-        if (_attachments.isNotEmpty) const SizedBox(height: 6),
-        ValueListenableBuilder(
-          valueListenable: _textController,
-          builder:
-              (context, value, child) => ListenableBuilder(
-                listenable: _waveController,
-                builder:
-                    (context, child) => Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        if (_viewModel!.enableAttachments)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 14),
-                            child: AttachmentActionBar(
-                              onAttachments: onAttachments,
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        decoration: _inputStyle?.containerDecoration,
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          children: [
+            AttachmentsView(
+              attachments: _attachments,
+              onRemove: onRemoveAttachment,
+            ),
+            if (_attachments.isNotEmpty) const SizedBox(height: 6),
+            ValueListenableBuilder(
+              valueListenable: _textController,
+              builder:
+                  (context, value, child) => ListenableBuilder(
+                    listenable: _waveController,
+                    builder:
+                        (context, child) => Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            if (_viewModel!.enableAttachments)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 14),
+                                child: AttachmentActionBar(
+                                  onAttachments: onAttachments,
+                                ),
+                              ),
+                            Expanded(
+                              child: TextOrAudioInput(
+                                inputStyle: _inputStyle!,
+                                waveController: _waveController,
+                                onCancelEdit: widget.onCancelEdit,
+                                onRecordingStopped: onRecordingStopped,
+                                onSubmitPrompt: onSubmitPrompt,
+                                textController: _textController,
+                                focusNode: _focusNode,
+                                autofocus: widget.autofocus,
+                                inputState: _inputState,
+                                cancelButtonStyle:
+                                    _chatStyle!.cancelButtonStyle!,
+                              ),
                             ),
-                          ),
-                        Expanded(
-                          child: TextOrAudioInput(
-                            inputStyle: _inputStyle!,
-                            waveController: _waveController,
-                            onCancelEdit: widget.onCancelEdit,
-                            onRecordingStopped: onRecordingStopped,
-                            onSubmitPrompt: onSubmitPrompt,
-                            textController: _textController,
-                            focusNode: _focusNode,
-                            autofocus: widget.autofocus,
-                            inputState: _inputState,
-                            cancelButtonStyle: _chatStyle!.cancelButtonStyle!,
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 14,
+                                right: 8,
+                              ),
+                              child: InputButton(
+                                inputState: _inputState,
+                                chatStyle: _chatStyle!,
+                                onSubmitPrompt: onSubmitPrompt,
+                                onCancelPrompt: onCancelPrompt,
+                                onStartRecording: onStartRecording,
+                                onStopRecording: onStopRecording,
+                              ),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 14),
-                          child: InputButton(
-                            inputState: _inputState,
-                            chatStyle: _chatStyle!,
-                            onSubmitPrompt: onSubmitPrompt,
-                            onCancelPrompt: onCancelPrompt,
-                            onStartRecording: onStartRecording,
-                            onStopRecording: onStopRecording,
-                          ),
-                        ),
-                      ],
-                    ),
-              ),
+                  ),
+            ),
+          ],
         ),
-      ],
-    ),
+      ),
+      if (widget.advertisingMessage != null)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          child: Text(
+            widget.advertisingMessage!,
+            style: _inputStyle!.advertisingMessageStyle,
+          ),
+        ),
+    ],
   );
 
   InputState get _inputState {

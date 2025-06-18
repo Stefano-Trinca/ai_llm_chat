@@ -207,6 +207,23 @@ class ActionButtonStyle {
     );
   }
 
+  /// Returns a copy of this [ActionButtonStyle] with the given fields replaced by new values.
+  ActionButtonStyle copyWith({
+    IconData? icon,
+    Color? iconColor,
+    Decoration? iconDecoration,
+    String? text,
+    TextStyle? textStyle,
+  }) {
+    return ActionButtonStyle(
+      icon: icon ?? this.icon,
+      iconColor: iconColor ?? this.iconColor,
+      iconDecoration: iconDecoration ?? this.iconDecoration,
+      text: text ?? this.text,
+      textStyle: textStyle ?? this.textStyle,
+    );
+  }
+
   /// The icon to display for the icon button.
   final IconData? icon;
 

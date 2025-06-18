@@ -10,6 +10,7 @@ class TestLlmProvider extends LlmProvider {
     String prompt, {
     Iterable<Attachment> attachments = const [],
   }) async* {
+    await Future.delayed(const Duration(seconds: 1));
     String buffer = '';
     for (int i = 0; i < prompt.length; i++) {
       buffer += prompt[i];
@@ -33,7 +34,7 @@ class TestLlmProvider extends LlmProvider {
     final message = ChatMessage(
       id: UniqueKey().toString(),
       origin: MessageOrigin.llm,
-      text: '',
+      text: null,
       attachments: attachments,
     );
 

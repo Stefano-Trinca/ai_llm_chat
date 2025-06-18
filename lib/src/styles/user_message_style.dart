@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_ai_toolkit/src/styles/toolkit_markdown.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
+import 'avatar_message_style.dart';
 import 'toolkit_colors.dart';
 import 'toolkit_text_styles.dart';
 
@@ -15,7 +14,13 @@ import 'toolkit_text_styles.dart';
 @immutable
 class UserMessageStyle {
   /// Creates a UserMessageStyle.
-  const UserMessageStyle({this.textStyle, this.decoration, this.markdownStyle});
+  const UserMessageStyle({
+    this.textStyle,
+    this.decoration,
+    this.markdownStyle,
+    this.showAvatar = false,
+    this.avatarStyle,
+  });
 
   /// Resolves the UserMessageStyle by combining the provided style with default
   /// values.
@@ -38,6 +43,8 @@ class UserMessageStyle {
       textStyle: style?.textStyle ?? defaultStyle.textStyle,
       decoration: style?.decoration ?? defaultStyle.decoration,
       markdownStyle: style?.markdownStyle ?? defaultStyle.markdownStyle,
+      showAvatar: style?.showAvatar ?? defaultStyle.showAvatar,
+      avatarStyle: style?.avatarStyle ?? defaultStyle.avatarStyle,
     );
   }
 
@@ -57,6 +64,8 @@ class UserMessageStyle {
       ),
     ),
     markdownStyle: ToolkitMarkdown.defaultMarkdownStyleSheet,
+    showAvatar: false,
+    avatarStyle: AvatarMessageStyle.defaultStyle(),
   );
 
   /// Provides a style based on the current theme context.
@@ -74,6 +83,25 @@ class UserMessageStyle {
         ),
       ),
       markdownStyle: ToolkitMarkdown.ofContext(context),
+      showAvatar: false,
+      avatarStyle: AvatarMessageStyle.context(context),
+    );
+  }
+
+  /// Returns a copy of this style with the given fields replaced with new values.
+  UserMessageStyle copyWith({
+    TextStyle? textStyle,
+    Decoration? decoration,
+    MarkdownStyleSheet? markdownStyle,
+    bool? showAvatar,
+    AvatarMessageStyle? avatarStyle,
+  }) {
+    return UserMessageStyle(
+      textStyle: textStyle ?? this.textStyle,
+      decoration: decoration ?? this.decoration,
+      markdownStyle: markdownStyle ?? this.markdownStyle,
+      showAvatar: showAvatar ?? this.showAvatar,
+      avatarStyle: avatarStyle ?? this.avatarStyle,
     );
   }
 
@@ -85,4 +113,10 @@ class UserMessageStyle {
 
   /// The markdown style sheet for User messages.
   final MarkdownStyleSheet? markdownStyle;
+
+  /// show the avatar for the LLM message.
+  final bool showAvatar;
+
+  /// Style of the avatar for the LLM message.
+  final AvatarMessageStyle? avatarStyle;
 }

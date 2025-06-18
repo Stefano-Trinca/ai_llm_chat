@@ -1,6 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// The [AppTheme] defines light and dark themes for the app.
 ///
@@ -53,13 +54,11 @@ abstract final class AppTheme {
       navigationRailUseIndicator: true,
     ),
     // ColorScheme seed generation configuration for light mode.
-    keyColors: const FlexKeyColors(
-      keepPrimary: true,
-    ),
+    keyColors: const FlexKeyColors(keepPrimary: true),
     // Direct ThemeData properties.
     visualDensity: VisualDensity.adaptivePlatformDensity,
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
-    fontFamily: 'Montserrat',
+    textTheme: GoogleFonts.montserratTextTheme(),
     fontFamilyFallback: ['NotoColorEmoji'],
   );
 
@@ -105,13 +104,11 @@ abstract final class AppTheme {
       navigationRailUseIndicator: true,
     ),
     // ColorScheme seed configuration setup for dark mode.
-    keyColors: const FlexKeyColors(
-      keepPrimary: true,
-    ),
+    keyColors: const FlexKeyColors(keepPrimary: true),
     // Direct ThemeData properties.
     visualDensity: VisualDensity.adaptivePlatformDensity,
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
-    fontFamily: 'Montserrat',
+    textTheme: GoogleFonts.montserratTextTheme(),
     fontFamilyFallback: ['NotoColorEmoji'],
   );
 }
