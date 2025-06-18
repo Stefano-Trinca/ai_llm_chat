@@ -27,6 +27,7 @@ class ChatMessage {
     required this.id,
     required this.origin,
     required this.text,
+    this.status = '',
     this.statusMessage,
     required this.attachments,
   }) : assert(origin.isUser && text != null && text.isNotEmpty || origin.isLlm);
@@ -46,6 +47,7 @@ class ChatMessage {
     id: map['id'] as String,
     origin: MessageOrigin.values.byName(map['origin'] as String),
     text: map['text'] as String,
+    status: map['status'] as String? ?? '',
     statusMessage: map['statusMessage'] as String?,
     attachments: [
       for (final attachment in map['attachments'] as List<dynamic>)
@@ -71,6 +73,7 @@ class ChatMessage {
     id: id,
     origin: MessageOrigin.llm,
     text: null,
+    status: '',
     statusMessage: null,
     attachments: [],
   );
@@ -87,6 +90,7 @@ class ChatMessage {
     id: id,
     origin: MessageOrigin.user,
     text: text,
+    status: '',
     statusMessage: null,
     attachments: attachments,
   );
@@ -104,6 +108,9 @@ class ChatMessage {
 
   /// Any attachments associated with the message.
   final Iterable<Attachment> attachments;
+
+  /// the status of the message
+  final String status;
 
   /// the status message of the message, that can be used to display when the text is null
   String? statusMessage;
@@ -127,6 +134,7 @@ class ChatMessage {
       'id: $id, '
       'origin: $origin, '
       'text: $text, '
+      'status: $status, '
       'statusMessage: $statusMessage, '
       'attachments: $attachments'
       ')';
@@ -146,6 +154,7 @@ class ChatMessage {
     'id': id,
     'origin': origin.name,
     'text': text,
+    'status': status,
     'statusMessage': statusMessage,
     'attachments': [
       for (final attachment in attachments)

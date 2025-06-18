@@ -2,8 +2,8 @@ name: ai_llm_chat
 description: >-
   A set of AI chat-related widgets for Flutter apps targeting mobile, desktop,
   and web.
-version: 0.9.1
-repository: https://github.com/flutter/ai
+version: 0.0.2
+# repository: https://github.com/flutter/ai
 
 topics:
   - ai
