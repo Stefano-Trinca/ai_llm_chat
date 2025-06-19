@@ -1,7 +1,6 @@
 import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
 import 'package:ai_llm_chat_example/_sample_messages.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as dev;
 
 class TestLlmProvider extends LlmProvider {
   TestLlmProvider() {
@@ -12,8 +11,8 @@ class TestLlmProvider extends LlmProvider {
 
   @override
   Stream<String> generateStream(ChatMessage message) async* {
-    status = 'run';
     await Future.delayed(const Duration(seconds: 1));
+    status = 'writing';
     String buffer = '';
     for (int i = 0; i < _tempText.length; i++) {
       buffer += _tempText[i];
@@ -21,11 +20,11 @@ class TestLlmProvider extends LlmProvider {
       await Future.delayed(const Duration(milliseconds: 50));
     }
 
-    if (history.isNotEmpty && history.last.status == 'streaming') {
-      final llmMessage = history.last.copyWith(text: _tempText, status: '');
+    final idx = history.indexWhere((e) => e.id == message.id);
+    if (idx != -1) {
+      final llmMessage = history[idx].copyWith(text: _tempText, status: '');
       final _source = history.toList();
-      _source.last = llmMessage;
-      _tempText = '';
+      _source[idx] = llmMessage;
       history = _source;
     }
     status = 'idle';
@@ -45,14 +44,22 @@ class TestLlmProvider extends LlmProvider {
       id: UniqueKey().toString(),
       origin: MessageOrigin.llm,
       text: null,
-      statusMessage: 'Sto cercando la risposta...',
       status: 'streaming',
       attachments: attachments,
     );
 
     final value = [...history, userMessage, message];
     _tempText = prompt;
+    status = 'thinking';
     history = value;
+  }
+
+  @override
+  String get statusMessage {
+    if (status == 'thinking') {
+      return 'Thinking...';
+    }
+    return '...';
   }
 
   @override

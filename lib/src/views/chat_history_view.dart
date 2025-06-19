@@ -62,9 +62,8 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
           builder: (context, history, child) {
             final showWelcomeMessage = viewModel.welcomeMessage != null;
             final showSuggestions =
-                viewModel.suggestions.isNotEmpty &&
-                viewModel.provider.history.isEmpty;
-            final history = [
+                viewModel.suggestions.isNotEmpty && history.isEmpty;
+            final source = [
               if (showWelcomeMessage)
                 ChatMessage(
                   id: '__welcome__',
@@ -72,11 +71,11 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
                   text: viewModel.welcomeMessage,
                   attachments: [],
                 ),
-              ...viewModel.provider.history,
+              ...history,
             ];
 
             // if empty and the empty builder is provided
-            if (history.isEmpty && widget.emptyBuilder != null) {
+            if (source.isEmpty && widget.emptyBuilder != null) {
               return widget.emptyBuilder!(context);
             }
 
@@ -87,23 +86,22 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
               child: ListView.builder(
                 reverse: true,
                 padding: viewModel.style?.chatViewPadding,
-                itemCount: history.length + (showSuggestions ? 1 : 0),
+                itemCount: source.length + (showSuggestions ? 1 : 0),
                 itemBuilder: (context, index) {
                   if (showSuggestions) {
                     index -= showWelcomeMessage ? 1 : 0;
-                    if (index ==
-                        history.length - (showWelcomeMessage ? 2 : 0)) {
+                    if (index == source.length - (showWelcomeMessage ? 2 : 0)) {
                       return ChatSuggestionsView(
                         suggestions: viewModel.suggestions,
                         onSelectSuggestion: widget.onSelectSuggestion,
                       );
                     }
                   }
-                  final messageIndex = history.length - index - 1;
-                  final message = history[messageIndex];
+                  final messageIndex = source.length - index - 1;
+                  final message = source[messageIndex];
                   final isLastUserMessage =
                       message.origin.isUser &&
-                      messageIndex >= history.length - 2;
+                      messageIndex >= source.length - 2;
                   final canEdit =
                       isLastUserMessage && widget.onEditMessage != null;
                   final isUser = message.origin.isUser;

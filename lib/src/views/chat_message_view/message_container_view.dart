@@ -1,4 +1,6 @@
 import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
+import 'package:ai_llm_chat/src/chat_view_model/chat_view_model_client.dart';
+import 'package:ai_llm_chat/src/views/chat_message_view/adaptive_copy_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:shimmer/shimmer.dart';
@@ -35,6 +37,7 @@ class MessageContainerView extends StatelessWidget {
   /// The message that this container displays
   final ChatMessage message;
 
+  /// An optional stream of text for streaming messages.
   final Stream<String>? streamText;
 
   /// Callback triggered when the edit action is performed on the message.
@@ -64,13 +67,11 @@ class MessageContainerView extends StatelessWidget {
         stream: streamText,
         builder: (context, snapshot) {
           final text = snapshot.data;
-          final statusMessage = message.statusMessage;
           return _buildView(
             context,
             isUserMessage: message.origin.isUser,
             messageStyle: messageStyle,
             text: text,
-            statusMessage: statusMessage,
           );
         },
       );
@@ -80,7 +81,6 @@ class MessageContainerView extends StatelessWidget {
         isUserMessage: message.origin.isUser,
         messageStyle: messageStyle,
         text: message.text,
-        statusMessage: message.statusMessage,
       );
     }
   }
@@ -90,21 +90,34 @@ class MessageContainerView extends StatelessWidget {
     required bool isUserMessage,
     required MessageStyle messageStyle,
     required String? text,
-    required String? statusMessage,
   }) {
     /// status message
-    if (text == null && statusMessage != null) {
-      return Padding(
-        padding: (messageStyle.padding ?? EdgeInsets.zero).copyWith(bottom: 24),
-        child: Shimmer.fromColors(
-          baseColor:
-              messageStyle.statusMessageShimmerColors?.$1 ??
-              context.colorScheme.onSurfaceVariant.withAlpha(120),
-          highlightColor:
-              messageStyle.statusMessageShimmerColors?.$2 ??
-              context.colorScheme.onSurfaceVariant,
-          child: Text(statusMessage, style: messageStyle.statusMessageStyle),
-        ),
+    if (text == null) {
+      return ChatViewModelClient(
+        builder: (context, viewModel, child) {
+          return ValueListenableBuilder(
+            valueListenable: viewModel.provider.listenableStatus,
+            builder: (context, status, child) {
+              return Padding(
+                padding: (messageStyle.padding ?? EdgeInsets.zero).copyWith(
+                  bottom: 24,
+                ),
+                child: Shimmer.fromColors(
+                  baseColor:
+                      messageStyle.statusMessageShimmerColors?.$1 ??
+                      context.colorScheme.onSurfaceVariant.withAlpha(120),
+                  highlightColor:
+                      messageStyle.statusMessageShimmerColors?.$2 ??
+                      context.colorScheme.onSurfaceVariant,
+                  child: Text(
+                    viewModel.provider.statusMessage,
+                    style: messageStyle.statusMessageStyle,
+                  ),
+                ),
+              );
+            },
+          );
+        },
       );
     }
 
@@ -125,13 +138,19 @@ class MessageContainerView extends StatelessWidget {
                     color: chatStyle.progressIndicatorColor!,
                   ),
                 )
-                : isWelcomeMessage || responseBuilder == null
-                ? MarkdownBody(
-                  data: text,
-                  selectable: false,
-                  styleSheet: styleSheet,
-                )
-                : responseBuilder!(context, text),
+                : AdaptiveCopyText(
+                  clipboardText: text,
+                  chatStyle: chatStyle,
+                  onEdit: onEdit,
+                  child:
+                      isWelcomeMessage || responseBuilder == null
+                          ? MarkdownBody(
+                            data: text,
+                            selectable: false,
+                            styleSheet: styleSheet,
+                          )
+                          : responseBuilder!(context, text),
+                ),
       ),
     );
   }

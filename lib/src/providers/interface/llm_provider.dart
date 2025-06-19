@@ -85,9 +85,16 @@ abstract class LlmProvider {
 
   /// Indicates whether the LLM provider is currently running.
   ///
-  ///  This getter checks the status of the LLM provider and returns true if
-  ///  the status is 'run', indicating that the provider is currently busy
-  bool get isRunning => status == 'run';
+  ///   This getter checks the current status of the LLM provider to determine
+  ///   if it is in a running state. If the status is not 'idle'
+  bool get isRunning => status != 'idle';
+
+  /// Returns the status message of the LLM provider.
+  ///
+  /// this is used when the text of the message is null
+  ///
+  /// you can show a custom message based on the status of the provider,
+  String get statusMessage;
 
   /// Sets the chat history to the provided messages.
   ///
