@@ -72,14 +72,11 @@ class ChatInputStyle {
       ),
       hintText: 'Ask me anything...',
       containerDecoration: BoxDecoration(
-        color:
-            theme.inputDecorationTheme.fillColor ?? theme.colorScheme.surface,
+        color: theme.colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       fieldDecoration: BoxDecoration(
-        color:
-            theme.inputDecorationTheme.fillColor ?? theme.colorScheme.surface,
-        border: Border.all(width: 1, color: theme.dividerColor),
+        color: theme.colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(24),
       ),
     );

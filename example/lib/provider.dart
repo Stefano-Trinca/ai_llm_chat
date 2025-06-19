@@ -1,15 +1,19 @@
 import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
+import 'package:ai_llm_chat_example/_sample_messages.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as dev;
 
 class TestLlmProvider extends LlmProvider {
-  // final List<ChatMessage> _history = sampleMessages.toList();
-  final List<ChatMessage> _history = [];
+  TestLlmProvider() {
+    history = sampleMessages.toList();
+  }
 
   @override
   Stream<String> generateStream(
     String prompt, {
     Iterable<Attachment> attachments = const [],
   }) async* {
+    status = 'run';
     await Future.delayed(const Duration(seconds: 1));
     String buffer = '';
     for (int i = 0; i < prompt.length; i++) {
@@ -17,13 +21,31 @@ class TestLlmProvider extends LlmProvider {
       yield buffer;
       await Future.delayed(const Duration(milliseconds: 50));
     }
+    status = 'idle';
+  }
+
+  void _setStreamMessage(
+    String prompt,
+    Iterable<Attachment> attachments,
+    String messageId,
+  ) {
+    final index = history.indexWhere((m) => m.id == messageId);
+    print('Setting stream message with id: $messageId and index: $index');
+
+    generateStream(prompt, attachments: attachments).listen((event) {
+      print('Received stream event: $event');
+      // Find the message in _history with the same id
+      if (index != -1) {
+        // Append the new text to the existing message
+        history[index].replace(event);
+        history = history.toList();
+      }
+    });
   }
 
   @override
-  Stream<String> sendMessageStream(
-    String prompt, {
-    Iterable<Attachment> attachments = const [],
-  }) async* {
+  void onSendMessage(String prompt, Iterable<Attachment> attachments) async {
+    // set the user message
     final userMessage = ChatMessage(
       id: UniqueKey().toString(),
       origin: MessageOrigin.user,
@@ -39,48 +61,18 @@ class TestLlmProvider extends LlmProvider {
       attachments: attachments,
     );
 
-    _history.addAll([userMessage, message]);
-
-    // Log start of sendMessageStream
-    await for (final chunk in generateStream(
-      prompt,
-      attachments: attachments,
-    )) {
-      // Update the message in _history with the same id
-      final index = _history.indexWhere((m) => m.id == message.id);
-      if (index != -1) {
-        _history[index].replace(chunk);
-        notifyListeners();
-      }
-      yield chunk;
-    }
+    final value = [...history, userMessage, message];
+    history = value;
+    _setStreamMessage(prompt, attachments, message.id);
   }
 
   @override
-  Iterable<ChatMessage> get history => _history;
-
-  @override
-  set history(Iterable<ChatMessage> history) {
-    _history
-      ..clear()
-      ..addAll(history);
-  }
-
-  final List<VoidCallback> _listeners = [];
-
-  @override
-  void addListener(VoidCallback listener) {
-    _listeners.add(listener);
+  void onCancelMessage() {
+    // TODO: implement onCancelMessage
   }
 
   @override
-  void removeListener(VoidCallback listener) {
-    _listeners.remove(listener);
-  }
-
-  void notifyListeners() {
-    for (final listener in _listeners) {
-      listener();
-    }
+  void onSelectSuggestion(String suggestion) {
+    onSendMessage(suggestion, []);
   }
 }

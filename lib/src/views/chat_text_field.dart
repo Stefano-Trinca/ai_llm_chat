@@ -142,6 +142,7 @@ class _ChatTextFieldState extends State<ChatTextField> {
             style: widget.style,
             decoration: InputDecoration(
               border: InputBorder.none,
+              fillColor: Colors.transparent,
               hintText: widget.hintText,
               hintStyle: widget.hintStyle,
               contentPadding: widget.hintPadding,

@@ -96,6 +96,67 @@ final List<ChatMessage> sampleMessages = [
     attachments: const [],
   ),
   ChatMessage(
+    id: '20',
+    origin: MessageOrigin.user,
+    text: 'Qual è la distanza tra la Terra e la Luna?',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '21',
+    origin: MessageOrigin.llm,
+    text: 'La distanza media tra la Terra e la Luna è di circa 384.400 km.',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '22',
+    origin: MessageOrigin.user,
+    text: 'Puoi dirmi una curiosità sugli animali?',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '23',
+    origin: MessageOrigin.llm,
+    text: 'Lo sapevi che il polpo ha tre cuori?',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '24',
+    origin: MessageOrigin.user,
+    text: 'Come si dice "buongiorno" in giapponese?',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '25',
+    origin: MessageOrigin.llm,
+    text: 'In giapponese, "buongiorno" si dice "ohayō gozaimasu".',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '26',
+    origin: MessageOrigin.user,
+    text: 'Qual è il numero primo più piccolo?',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '27',
+    origin: MessageOrigin.llm,
+    text: 'Il numero primo più piccolo è 2.',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '28',
+    origin: MessageOrigin.user,
+    text: 'Mi suggerisci una ricetta veloce per la cena?',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '29',
+    origin: MessageOrigin.llm,
+    text:
+        'Certo! Puoi preparare una pasta aglio, olio e peperoncino: semplice e veloce.',
+    attachments: const [],
+  ),
+  ChatMessage(
     id: '4',
     origin: MessageOrigin.user,
     text:

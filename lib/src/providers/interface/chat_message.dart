@@ -175,4 +175,38 @@ class ChatMessage {
         },
     ],
   };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChatMessage) return false;
+    return id == other.id &&
+        origin == other.origin &&
+        text == other.text &&
+        status == other.status &&
+        statusMessage == other.statusMessage &&
+        _attachmentsEqual(attachments, other.attachments);
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      id,
+      origin,
+      text,
+      status,
+      statusMessage,
+      Object.hashAll(attachments),
+    );
+  }
+
+  bool _attachmentsEqual(Iterable<Attachment> a, Iterable<Attachment> b) {
+    final aList = a.toList();
+    final bList = b.toList();
+    if (aList.length != bList.length) return false;
+    for (int i = 0; i < aList.length; i++) {
+      if (aList[i] != bList[i]) return false;
+    }
+    return true;
+  }
 }

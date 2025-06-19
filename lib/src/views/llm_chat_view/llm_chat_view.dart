@@ -166,6 +166,7 @@ class _LlmChatViewState extends State<LlmChatView>
   @override
   bool get wantKeepAlive => true;
 
+  late bool _isRunning; // status of the LLM provider running
   LlmResponse? _pendingPromptResponse;
   ChatMessage? _initialMessage;
   ChatMessage? _associatedResponse;
@@ -174,13 +175,18 @@ class _LlmChatViewState extends State<LlmChatView>
   @override
   void initState() {
     super.initState();
-    widget.viewModel.provider.addListener(_onHistoryChanged);
+    _isRunning = widget.viewModel.provider.isRunning;
+    widget.viewModel.provider.listenableHistory.addListener(_listenerHistory);
+    widget.viewModel.provider.listenableStatus.addListener(_listenerStatus);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.viewModel.provider.removeListener(_onHistoryChanged);
+    widget.viewModel.provider.listenableHistory.removeListener(
+      _listenerHistory,
+    );
+    widget.viewModel.provider.listenableStatus.removeListener(_listenerStatus);
   }
 
   @override
@@ -188,101 +194,61 @@ class _LlmChatViewState extends State<LlmChatView>
     super.build(context); // for AutomaticKeepAliveClientMixin
 
     final chatStyle = LlmChatViewStyle.resolve(widget.viewModel.style);
-    return ListenableBuilder(
-      listenable: widget.viewModel.provider,
-      builder:
-          (context, child) => ChatViewModelProvider(
-            viewModel: widget.viewModel,
-            child: GestureDetector(
-              onTap: () {
-                // Dismiss keyboard when tapping anywhere in the view
-                FocusScope.of(context).unfocus();
-              },
-              child: Container(
-                color: chatStyle.backgroundColor,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: chatStyle.maxWidth ?? 800,
-                    ),
-                    child: Column(
+    return ChatViewModelProvider(
+      viewModel: widget.viewModel,
+      child: GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping anywhere in the view
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          color: chatStyle.backgroundColor,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: chatStyle.maxWidth ?? 800),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Stack(
                       children: [
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              ChatHistoryView(
-                                // can only edit if we're not waiting on the LLM or if
-                                // we're not already editing an LLM response
-                                onEditMessage:
-                                    _pendingPromptResponse == null &&
-                                            _associatedResponse == null
-                                        ? _onEditMessage
-                                        : null,
-                                onSelectSuggestion: _onSelectSuggestion,
-                                emptyBuilder: widget.emptyBuilder,
-                              ),
-                            ],
-                          ),
-                        ),
-                        ChatInput(
-                          initialMessage: _initialMessage,
-                          autofocus: widget.viewModel.suggestions.isEmpty,
-                          onCancelEdit:
-                              _associatedResponse != null
-                                  ? _onCancelEdit
+                        ChatHistoryView(
+                          // can only edit if we're not waiting on the LLM or if
+                          // we're not already editing an LLM response
+                          onEditMessage:
+                              !_isRunning && _associatedResponse == null
+                                  ? _onEditMessage
                                   : null,
-                          onSendMessage: _onSendMessage,
-                          onCancelMessage:
-                              _pendingPromptResponse == null
-                                  ? null
-                                  : _onCancelMessage,
-                          onTranslateStt: _onTranslateStt,
-                          onCancelStt:
-                              _pendingSttResponse == null ? null : _onCancelStt,
-                          advertisingMessage:
-                              widget.viewModel.advertisingMessage,
+                          onSelectSuggestion:
+                              widget.viewModel.provider.onSelectSuggestion,
+                          emptyBuilder: widget.emptyBuilder,
                         ),
                       ],
                     ),
                   ),
-                ),
+                  ChatInput(
+                    initialMessage: _initialMessage,
+                    autofocus: widget.viewModel.suggestions.isEmpty,
+                    onCancelEdit:
+                        _associatedResponse != null ? _onCancelEdit : null,
+                    onSendMessage: widget.viewModel.provider.onSendMessage,
+                    onCancelMessage:
+                        widget.viewModel.enableCancel && _isRunning
+                            ? widget.viewModel.provider.onCancelMessage
+                            : null,
+                    onTranslateStt: _onTranslateStt,
+                    onCancelStt:
+                        _pendingSttResponse == null ? null : _onCancelStt,
+                    advertisingMessage: widget.viewModel.advertisingMessage,
+                  ),
+                ],
               ),
             ),
           ),
+        ),
+      ),
     );
   }
-
-  Future<void> _onSendMessage(
-    String prompt,
-    Iterable<Attachment> attachments,
-  ) async {
-    _initialMessage = null;
-    _associatedResponse = null;
-
-    // check the viewmodel for a user-provided message sender to use instead
-    final sendMessageStream =
-        widget.viewModel.messageSender ??
-        widget.viewModel.provider.sendMessageStream;
-
-    _pendingPromptResponse = LlmResponse(
-      stream: sendMessageStream(prompt, attachments: attachments),
-      // update during the streaming response input so that the end-user can see
-      // the response as it streams in
-      onUpdate: (_) => setState(() {}),
-      onDone: _onPromptDone,
-    );
-
-    setState(() {});
-  }
-
-  void _onPromptDone(LlmException? error) {
-    setState(() => _pendingPromptResponse = null);
-    unawaited(_showLlmException(error));
-  }
-
-  void _onCancelMessage() =>
-      widget.viewModel.enableCancel ? _pendingPromptResponse?.cancel() : null;
 
   void _onEditMessage(ChatMessage message) {
     assert(_pendingPromptResponse == null);
@@ -399,16 +365,22 @@ class _LlmChatViewState extends State<LlmChatView>
     }
   }
 
-  void _onSelectSuggestion(String suggestion) =>
-  //todo: sistemare la creazione dei messaggi
-  setState(() => _initialMessage = ChatMessage.user('', suggestion, []));
-
-  void _onHistoryChanged() {
+  void _listenerHistory() {
     // if the history is cleared, clear the initial message
     if (widget.viewModel.provider.history.isEmpty) {
       setState(() {
         _initialMessage = null;
         _associatedResponse = null;
+      });
+    }
+  }
+
+  void _listenerStatus() {
+    //when the status
+
+    if (_isRunning != widget.viewModel.provider.isRunning) {
+      setState(() {
+        _isRunning = widget.viewModel.provider.isRunning;
       });
     }
   }
