@@ -1,11 +1,10 @@
+import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
 import 'package:flutter/material.dart';
-import '../../utils/theme_utils.dart';
-import '../../styles/styles.dart';
-import '../../views/jumping_dots_progress_indicator/jumping_dots_progress_indicator.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'adaptive_copy_text.dart';
+import '../../utils/theme_utils.dart';
+import '../../views/jumping_dots_progress_indicator/jumping_dots_progress_indicator.dart';
 import 'hovering_buttons.dart';
 
 /// A widget that displays a chat message container with customizable appearance and content.
@@ -24,9 +23,8 @@ class MessageContainerView extends StatelessWidget {
   /// - [isWelcomeMessage]: Whether this message is a welcome message.
   const MessageContainerView({
     super.key,
-    this.text,
-    this.statusMessage,
-    required this.isUserMessage,
+    required this.message,
+    this.streamText,
     this.onEdit,
     required this.chatStyle,
     this.styleSheet,
@@ -34,14 +32,10 @@ class MessageContainerView extends StatelessWidget {
     this.isWelcomeMessage = false,
   });
 
-  /// The main text content of the chat message.
-  final String? text;
+  /// The message that this container displays
+  final ChatMessage message;
 
-  /// An optional status message associated with the chat message (e.g., "sending", "delivered").
-  final String? statusMessage;
-
-  /// Indicates whether the message was sent by the user.
-  final bool isUserMessage;
+  final Stream<String>? streamText;
 
   /// Callback triggered when the edit action is performed on the message.
   final VoidCallback? onEdit;
@@ -61,10 +55,43 @@ class MessageContainerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final messageStyle =
-        isUserMessage
+        message.origin.isUser
             ? chatStyle.userMessageStyle ?? MessageStyle.contextUser(context)
             : chatStyle.llmMessageStyle ?? MessageStyle.contextLLM(context);
 
+    if (message.status == 'streaming' && streamText != null) {
+      return StreamBuilder<String>(
+        stream: streamText,
+        builder: (context, snapshot) {
+          final text = snapshot.data;
+          final statusMessage = message.statusMessage;
+          return _buildView(
+            context,
+            isUserMessage: message.origin.isUser,
+            messageStyle: messageStyle,
+            text: text,
+            statusMessage: statusMessage,
+          );
+        },
+      );
+    } else {
+      return _buildView(
+        context,
+        isUserMessage: message.origin.isUser,
+        messageStyle: messageStyle,
+        text: message.text,
+        statusMessage: message.statusMessage,
+      );
+    }
+  }
+
+  Widget _buildView(
+    BuildContext context, {
+    required bool isUserMessage,
+    required MessageStyle messageStyle,
+    required String? text,
+    required String? statusMessage,
+  }) {
     /// status message
     if (text == null && statusMessage != null) {
       return Padding(
@@ -76,12 +103,11 @@ class MessageContainerView extends StatelessWidget {
           highlightColor:
               messageStyle.statusMessageShimmerColors?.$2 ??
               context.colorScheme.onSurfaceVariant,
-          child: Text(statusMessage!, style: messageStyle.statusMessageStyle),
+          child: Text(statusMessage, style: messageStyle.statusMessageStyle),
         ),
       );
     }
 
-    // message container
     return HoveringButtons(
       isUserMessage: isUserMessage,
       chatStyle: chatStyle,
@@ -99,19 +125,13 @@ class MessageContainerView extends StatelessWidget {
                     color: chatStyle.progressIndicatorColor!,
                   ),
                 )
-                : AdaptiveCopyText(
-                  chatStyle: chatStyle,
-                  clipboardText: text ?? '',
-                  onEdit: onEdit,
-                  child:
-                      isWelcomeMessage || responseBuilder == null
-                          ? MarkdownBody(
-                            data: text ?? '',
-                            selectable: false,
-                            styleSheet: styleSheet,
-                          )
-                          : responseBuilder!(context, text ?? ''),
-                ),
+                : isWelcomeMessage || responseBuilder == null
+                ? MarkdownBody(
+                  data: text,
+                  selectable: false,
+                  styleSheet: styleSheet,
+                )
+                : responseBuilder!(context, text),
       ),
     );
   }

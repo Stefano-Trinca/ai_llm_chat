@@ -8,39 +8,27 @@ class TestLlmProvider extends LlmProvider {
     history = sampleMessages.toList();
   }
 
+  String _tempText = '';
+
   @override
-  Stream<String> generateStream(
-    String prompt, {
-    Iterable<Attachment> attachments = const [],
-  }) async* {
+  Stream<String> generateStream(ChatMessage message) async* {
     status = 'run';
     await Future.delayed(const Duration(seconds: 1));
     String buffer = '';
-    for (int i = 0; i < prompt.length; i++) {
-      buffer += prompt[i];
+    for (int i = 0; i < _tempText.length; i++) {
+      buffer += _tempText[i];
       yield buffer;
       await Future.delayed(const Duration(milliseconds: 50));
     }
+
+    if (history.isNotEmpty && history.last.status == 'streaming') {
+      final llmMessage = history.last.copyWith(text: _tempText, status: '');
+      final _source = history.toList();
+      _source.last = llmMessage;
+      _tempText = '';
+      history = _source;
+    }
     status = 'idle';
-  }
-
-  void _setStreamMessage(
-    String prompt,
-    Iterable<Attachment> attachments,
-    String messageId,
-  ) {
-    final index = history.indexWhere((m) => m.id == messageId);
-    print('Setting stream message with id: $messageId and index: $index');
-
-    generateStream(prompt, attachments: attachments).listen((event) {
-      print('Received stream event: $event');
-      // Find the message in _history with the same id
-      if (index != -1) {
-        // Append the new text to the existing message
-        history[index].replace(event);
-        history = history.toList();
-      }
-    });
   }
 
   @override
@@ -58,12 +46,13 @@ class TestLlmProvider extends LlmProvider {
       origin: MessageOrigin.llm,
       text: null,
       statusMessage: 'Sto cercando la risposta...',
+      status: 'streaming',
       attachments: attachments,
     );
 
     final value = [...history, userMessage, message];
+    _tempText = prompt;
     history = value;
-    _setStreamMessage(prompt, attachments, message.id);
   }
 
   @override

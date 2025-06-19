@@ -34,7 +34,6 @@ class UserMessageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ChatViewModelClient(
     builder: (context, viewModel, child) {
-      final text = message.text!;
       final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
       final userStyle =
           chatStyle.userMessageStyle ?? MessageStyle.contextUser(context);
@@ -45,13 +44,11 @@ class UserMessageView extends StatelessWidget {
               : null;
 
       final messageContainer = MessageContainerView(
-        text: text,
-        isUserMessage: true,
+        message: message,
         chatStyle: chatStyle,
         styleSheet: userStyle.markdownStyle,
         onEdit: onEdit,
         responseBuilder: viewModel.responseBuilder,
-        statusMessage: message.statusMessage,
       );
 
       return MessageRowView(

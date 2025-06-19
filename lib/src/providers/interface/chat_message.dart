@@ -110,6 +110,8 @@ class ChatMessage {
   final Iterable<Attachment> attachments;
 
   /// the status of the message
+  ///
+  /// when the status is 'streaming' the text will be get from the stream of the provider
   final String status;
 
   /// the status message of the message, that can be used to display when the text is null
@@ -127,6 +129,25 @@ class ChatMessage {
   ///
   /// if null the status message will be removed.
   void replaceStatusMessage(String? text) => statusMessage = text;
+
+  /// Returns a copy of this [ChatMessage] with the given fields replaced.
+  ChatMessage copyWith({
+    String? id,
+    MessageOrigin? origin,
+    String? text,
+    String? status,
+    String? statusMessage,
+    Iterable<Attachment>? attachments,
+  }) {
+    return ChatMessage(
+      id: id ?? this.id,
+      origin: origin ?? this.origin,
+      text: text ?? this.text,
+      status: status ?? this.status,
+      statusMessage: statusMessage ?? this.statusMessage,
+      attachments: attachments ?? this.attachments,
+    );
+  }
 
   @override
   String toString() =>

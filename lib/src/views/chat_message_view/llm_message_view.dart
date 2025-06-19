@@ -4,12 +4,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import '../../chat_view_model/chat_view_model_client.dart';
 import '../../providers/interface/chat_message.dart';
 import '../../styles/styles.dart';
 import '../../views/chat_message_view/avatar_message_view.dart';
 import '../../views/chat_message_view/message_row_view.dart';
-
-import '../../chat_view_model/chat_view_model_client.dart';
 import 'message_container_view.dart';
 
 /// A widget that displays an LLM (Language Model) message in a chat interface.
@@ -34,7 +34,6 @@ class LlmMessageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ChatViewModelClient(
     builder: (context, viewModel, child) {
-      final text = message.text;
       final chatStyle = LlmChatViewStyle.resolve(viewModel.style);
       final llmStyle =
           chatStyle.llmMessageStyle ?? MessageStyle.contextLLM(context);
@@ -45,13 +44,12 @@ class LlmMessageView extends StatelessWidget {
               : null;
 
       final messageContainer = MessageContainerView(
-        text: text,
-        isUserMessage: false,
+        message: message,
         isWelcomeMessage: isWelcomeMessage,
         chatStyle: chatStyle,
         styleSheet: llmStyle.markdownStyle,
         responseBuilder: viewModel.responseBuilder,
-        statusMessage: message.statusMessage,
+        streamText: viewModel.provider.generateStream(message),
       );
 
       return MessageRowView(

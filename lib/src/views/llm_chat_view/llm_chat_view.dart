@@ -290,16 +290,16 @@ class _LlmChatViewState extends State<LlmChatView>
     final attachments = [await FileAttachment.fromFile(file)];
 
     var response = '';
-    _pendingSttResponse = LlmResponse(
-      stream: widget.viewModel.provider.generateStream(
-        prompt,
-        attachments: attachments,
-      ),
-      onUpdate: (text) => response += text,
-      onDone:
-          (error) async =>
-              _onSttDone(error, response, file, currentAttachments),
-    );
+    // _pendingSttResponse = LlmResponse(
+    //   stream: widget.viewModel.provider.generateStream(
+    //     // prompt,
+    //     // attachments: attachments,
+    //   ),
+    //   onUpdate: (text) => response += text,
+    //   onDone:
+    //       (error) async =>
+    //           _onSttDone(error, response, file, currentAttachments),
+    // );
 
     setState(() {});
   }
