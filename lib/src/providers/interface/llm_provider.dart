@@ -18,13 +18,20 @@ abstract class LlmProvider {
   ///  This constructor initializes the provider with an empty chat history.
   LlmProvider()
     : listenableHistory = ValueNotifier<List<ChatMessage>>(<ChatMessage>[]),
-      listenableStatus = ValueNotifier<String>('idle');
+      listenableStatus = ValueNotifier<String>('idle'),
+      listenableShowStatusMessage = ValueNotifier<bool>(false) {
+    listenableHistory.addListener(_showStatusMessageListener);
+    listenableStatus.addListener(_showStatusMessageListener);
+  }
 
   /// A [ValueListenable] that provides access to the chat history.
   final ValueNotifier<List<ChatMessage>> listenableHistory;
 
   /// A [ValueNotifier] that provides access to the status of the LLM provider.
   final ValueNotifier<String> listenableStatus;
+
+  /// A [ValueNotifier] that indicates whether to show a status message in the history
+  final ValueNotifier<bool> listenableShowStatusMessage;
 
   /// This stream writes the generated text directly into the message widget
   /// with `status == streaming`.
@@ -114,6 +121,28 @@ abstract class LlmProvider {
   /// set to 'run' when the provider is busy processing a request and cannot
   ///  send messages, or 'idle' when it is ready to accept new requests.
   set status(String status) => listenableStatus.value = status;
+
+  /// Updates the status message based on the current state of the history and
+  /// the statusMessage that can be the stauts of the chat
+  void _showStatusMessageListener() {
+    final bool lastMessageUser =
+        history.isNotEmpty && history.last.origin.isUser;
+    final bool hasStatusMessage = statusMessage.isNotEmpty;
+    final showStatusMessage = lastMessageUser && hasStatusMessage;
+    if (listenableShowStatusMessage.value != showStatusMessage) {
+      listenableShowStatusMessage.value = showStatusMessage;
+    }
+  }
+
+  /// Disposes of the LLM provider resources.
+  ///
+  ///  This method is called to clean up resources used by the LLM provider,
+  @mustCallSuper
+  void dispose() {
+    listenableHistory.dispose();
+    listenableStatus.dispose();
+    listenableShowStatusMessage.dispose();
+  }
 }
 
 /// A function that generates a stream of text based on a prompt and

@@ -9,5 +9,5 @@ To use the `ai_llm_chat` package, add it to your project's Flutter dependencies 
   ai_llm_chat:
     git:
       url: https://github.com/Stefano-Trinca/ai_llm_chat.git
-      ref: 0.0.5
+      ref: 0.0.6
 ```

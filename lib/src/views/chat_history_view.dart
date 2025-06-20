@@ -60,71 +60,85 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
         return ValueListenableBuilder(
           valueListenable: viewModel.provider.listenableHistory,
           builder: (context, history, child) {
-            final showWelcomeMessage = viewModel.welcomeMessage != null;
-            final showSuggestions =
-                viewModel.suggestions.isNotEmpty && history.isEmpty;
-            final source = [
-              if (showWelcomeMessage)
-                ChatMessage(
-                  id: '__welcome__',
-                  origin: MessageOrigin.llm,
-                  text: viewModel.welcomeMessage,
-                  attachments: [],
-                ),
-              ...history,
-            ];
+            return ValueListenableBuilder(
+              valueListenable: viewModel.provider.listenableShowStatusMessage,
+              builder: (context, showStatusMessage, child) {
+                final showWelcomeMessage = viewModel.welcomeMessage != null;
+                final showSuggestions =
+                    viewModel.suggestions.isNotEmpty && history.isEmpty;
+                final source = [
+                  if (showWelcomeMessage)
+                    ChatMessage(
+                      id: '__welcome__',
+                      origin: MessageOrigin.llm,
+                      text: viewModel.welcomeMessage,
+                      attachments: [],
+                    ),
+                  ...history,
+                  if (showStatusMessage)
+                    ChatMessage(
+                      id: '__status__',
+                      origin: MessageOrigin.llm,
+                      text: null,
+                      attachments: [],
+                    ),
+                ];
 
-            // if empty and the empty builder is provided
-            if (source.isEmpty && widget.emptyBuilder != null) {
-              return widget.emptyBuilder!(context);
-            }
+                // if empty and the empty builder is provided
+                if (source.isEmpty && widget.emptyBuilder != null) {
+                  return widget.emptyBuilder!(context);
+                }
 
-            return ScrollConfiguration(
-              behavior: ScrollConfiguration.of(
-                context,
-              ).copyWith(scrollbars: false),
-              child: ListView.builder(
-                reverse: true,
-                padding: viewModel.style?.chatViewPadding,
-                itemCount: source.length + (showSuggestions ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (showSuggestions) {
-                    index -= showWelcomeMessage ? 1 : 0;
-                    if (index == source.length - (showWelcomeMessage ? 2 : 0)) {
-                      return ChatSuggestionsView(
-                        suggestions: viewModel.suggestions,
-                        onSelectSuggestion: widget.onSelectSuggestion,
+                return ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(
+                    context,
+                  ).copyWith(scrollbars: false),
+                  child: ListView.builder(
+                    reverse: true,
+                    padding: viewModel.style?.chatViewPadding,
+                    itemCount: source.length + (showSuggestions ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (showSuggestions) {
+                        index -= showWelcomeMessage ? 1 : 0;
+                        if (index ==
+                            source.length - (showWelcomeMessage ? 2 : 0)) {
+                          return ChatSuggestionsView(
+                            suggestions: viewModel.suggestions,
+                            onSelectSuggestion: widget.onSelectSuggestion,
+                          );
+                        }
+                      }
+                      final messageIndex = source.length - index - 1;
+                      final message = source[messageIndex];
+                      final isLastUserMessage =
+                          message.origin.isUser &&
+                          messageIndex >= source.length - 2;
+                      final canEdit =
+                          isLastUserMessage && widget.onEditMessage != null;
+                      final isUser = message.origin.isUser;
+
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child:
+                            isUser
+                                ? UserMessageView(
+                                  message,
+                                  onEdit:
+                                      canEdit
+                                          ? () => widget.onEditMessage?.call(
+                                            message,
+                                          )
+                                          : null,
+                                )
+                                : LlmMessageView(
+                                  message,
+                                  isWelcomeMessage: messageIndex == 0,
+                                ),
                       );
-                    }
-                  }
-                  final messageIndex = source.length - index - 1;
-                  final message = source[messageIndex];
-                  final isLastUserMessage =
-                      message.origin.isUser &&
-                      messageIndex >= source.length - 2;
-                  final canEdit =
-                      isLastUserMessage && widget.onEditMessage != null;
-                  final isUser = message.origin.isUser;
-
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child:
-                        isUser
-                            ? UserMessageView(
-                              message,
-                              onEdit:
-                                  canEdit
-                                      ? () =>
-                                          widget.onEditMessage?.call(message)
-                                      : null,
-                            )
-                            : LlmMessageView(
-                              message,
-                              isWelcomeMessage: messageIndex == 0,
-                            ),
-                  );
-                },
-              ),
+                    },
+                  ),
+                );
+              },
             );
           },
         );

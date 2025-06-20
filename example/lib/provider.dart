@@ -40,6 +40,12 @@ class TestLlmProvider extends LlmProvider {
       attachments: attachments,
     );
 
+    final value = [...history, userMessage];
+    history = value;
+
+    status = 'thinking';
+    await Future.delayed(const Duration(seconds: 2));
+
     final message = ChatMessage(
       id: UniqueKey().toString(),
       origin: MessageOrigin.llm,
@@ -48,10 +54,9 @@ class TestLlmProvider extends LlmProvider {
       attachments: attachments,
     );
 
-    final value = [...history, userMessage, message];
+    final newValue = [...history, message];
     _tempText = prompt;
-    status = 'thinking';
-    history = value;
+    history = newValue;
   }
 
   @override
