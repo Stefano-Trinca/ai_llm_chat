@@ -142,9 +142,9 @@ class _ChatInputState extends State<ChatInput> {
 
   @override
   void dispose() {
-    _textController.dispose();
     _waveController.dispose();
     _focusNode.dispose();
+    _textController.dispose();
     super.dispose();
   }
 

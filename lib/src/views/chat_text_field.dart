@@ -107,8 +107,8 @@ class _ChatTextFieldState extends State<ChatTextField> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
-    _controller.dispose();
+    // _focusNode.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 
