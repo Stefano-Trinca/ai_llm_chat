@@ -191,6 +191,13 @@ final List<ChatMessage> sampleMessages = [
   ),
   ChatMessage(
     id: '9',
+    origin: MessageOrigin.user,
+    text: 'questo è il testo di un messaggio con metadati',
+    attachments: const [],
+    metadata: {'source': 'https://example.com'},
+  ),
+  ChatMessage(
+    id: '9',
     origin: MessageOrigin.llm,
     text: 'questo è il risultato',
     statusMessage: 'Sto elaborando la tua richiesta...',

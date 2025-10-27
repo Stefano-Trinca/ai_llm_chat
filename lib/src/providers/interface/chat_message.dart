@@ -30,6 +30,8 @@ class ChatMessage {
     this.status = '',
     this.statusMessage,
     required this.attachments,
+    this.headerMetadata = const {},
+    this.metadata = const {},
   }) : assert(origin.isUser && text != null && text.isNotEmpty || origin.isLlm);
 
   /// Converts a JSON map representation to a [ChatMessage].
@@ -64,6 +66,8 @@ class ChatMessage {
           _ => throw UnimplementedError(),
         },
     ],
+    headerMetadata: map['headerMetadata'] as Map<String, dynamic>? ?? const {},
+    metadata: map['metadata'] as Map<String, dynamic>? ?? const {},
   );
 
   /// Factory constructor for creating an LLM-originated message.
@@ -76,6 +80,8 @@ class ChatMessage {
     status: '',
     statusMessage: null,
     attachments: [],
+    headerMetadata: {},
+    metadata: {},
   );
 
   /// Factory constructor for creating a user-originated message.
@@ -86,6 +92,8 @@ class ChatMessage {
     String id,
     String text,
     Iterable<Attachment> attachments,
+    Map<String, dynamic>? headerMetadata,
+    Map<String, dynamic>? metadata,
   ) => ChatMessage(
     id: id,
     origin: MessageOrigin.user,
@@ -93,6 +101,8 @@ class ChatMessage {
     status: '',
     statusMessage: null,
     attachments: attachments,
+    headerMetadata: headerMetadata ?? const {},
+    metadata: metadata ?? const {},
   );
 
   /// Unique identifier for the message.
@@ -117,6 +127,15 @@ class ChatMessage {
   /// the status message of the message, that can be used to display when the text is null
   String? statusMessage;
 
+  /// Header metadata
+  /// those metadata can be used to display additional widget before the message content
+  final Map<String, dynamic> headerMetadata;
+
+  /// Metadata
+  /// those metadata can be used to store additional information about the message
+  /// widget of those metadata is placed on the bottom of message container
+  final Map<String, dynamic> metadata;
+
   /// Appends additional text to the existing message content.
   ///
   /// This is typically used for LLM messages that are streamed in parts.
@@ -138,6 +157,8 @@ class ChatMessage {
     String? status,
     String? statusMessage,
     Iterable<Attachment>? attachments,
+    Map<String, dynamic>? headerMetadata,
+    Map<String, dynamic>? metadata,
   }) {
     return ChatMessage(
       id: id ?? this.id,
@@ -146,6 +167,8 @@ class ChatMessage {
       status: status ?? this.status,
       statusMessage: statusMessage ?? this.statusMessage,
       attachments: attachments ?? this.attachments,
+      headerMetadata: headerMetadata ?? this.headerMetadata,
+      metadata: metadata ?? this.metadata,
     );
   }
 
@@ -157,7 +180,9 @@ class ChatMessage {
       'text: $text, '
       'status: $status, '
       'statusMessage: $statusMessage, '
-      'attachments: $attachments'
+      'attachments: $attachments, '
+      'headerMetadata: $headerMetadata, '
+      'metadata: $metadata'
       ')';
 
   /// Converts a [ChatMessage] to a JSON map representation.
@@ -195,6 +220,8 @@ class ChatMessage {
           },
         },
     ],
+    'headerMetadata': headerMetadata,
+    'metadata': metadata,
   };
 
   @override
@@ -206,7 +233,9 @@ class ChatMessage {
         text == other.text &&
         status == other.status &&
         statusMessage == other.statusMessage &&
-        _attachmentsEqual(attachments, other.attachments);
+        _attachmentsEqual(attachments, other.attachments) &&
+        headerMetadata == other.headerMetadata &&
+        metadata == other.metadata;
   }
 
   @override
@@ -217,6 +246,8 @@ class ChatMessage {
       text,
       status,
       statusMessage,
+      headerMetadata,
+      metadata,
       Object.hashAll(attachments),
     );
   }

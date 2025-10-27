@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 
 import 'attachments.dart';
@@ -58,6 +59,16 @@ abstract class LlmProvider {
   /// be included with the prompt. These attachments can be images, files, or
   /// links that provide additional context for the LLM.
   void onSendMessage(String prompt, Iterable<Attachment> attachments);
+
+  // Sends an audio file to the LLM provider with optional attachments.
+  ///
+  /// This method is used to send an audio file for processing and get the text response
+  ///
+  /// [audioFile] is the audio file to be sent to the LLM provider.
+  /// [attachments] is an optional iterable of [Attachment] objects that can
+  /// be included with the audio file. These attachments can be images, files, or
+  /// links that provide additional context for the LLM.
+  void onSendAudio(XFile audioFile, Iterable<Attachment> attachments);
 
   /// Called when a suggestion is selected by the user.
   ///

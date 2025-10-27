@@ -167,48 +167,74 @@ class _ChatInputState extends State<ChatInput> {
               builder:
                   (context, value, child) => ListenableBuilder(
                     listenable: _waveController,
-                    builder:
-                        (context, child) => Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            if (_viewModel!.enableAttachments)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 14),
-                                child: AttachmentActionBar(
-                                  onAttachments: onAttachments,
-                                ),
-                              ),
-                            Expanded(
-                              child: TextOrAudioInput(
-                                inputStyle: _inputStyle!,
-                                waveController: _waveController,
-                                onCancelEdit: widget.onCancelEdit,
-                                onRecordingStopped: onRecordingStopped,
-                                onSubmitPrompt: onSubmitPrompt,
-                                textController: _textController,
-                                focusNode: _focusNode,
-                                autofocus: widget.autofocus,
-                                inputState: _inputState,
-                                cancelButtonStyle:
-                                    _chatStyle!.cancelButtonStyle!,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: 14,
-                                right: 8,
-                              ),
-                              child: InputButton(
-                                inputState: _inputState,
-                                chatStyle: _chatStyle!,
-                                onSubmitPrompt: onSubmitPrompt,
-                                onCancelPrompt: onCancelPrompt,
-                                onStartRecording: onStartRecording,
-                                onStopRecording: onStopRecording,
-                              ),
-                            ),
-                          ],
+                    builder: (context, child) {
+                      final wgtFieldInput = Expanded(
+                        child: TextOrAudioInput(
+                          inputStyle: _inputStyle!,
+                          waveController: _waveController,
+                          onCancelEdit: widget.onCancelEdit,
+                          onRecordingStopped: onRecordingStopped,
+                          onSubmitPrompt: onSubmitPrompt,
+                          textController: _textController,
+                          focusNode: _focusNode,
+                          autofocus: widget.autofocus,
+                          inputState: _inputState,
+                          cancelButtonStyle: _chatStyle!.cancelButtonStyle!,
                         ),
+                      );
+
+                      final wgtAttachments = AttachmentActionBar(
+                        onAttachments: onAttachments,
+                      );
+
+                      final wgtInputButton = InputButton(
+                        inputState: _inputState,
+                        chatStyle: _chatStyle!,
+                        onSubmitPrompt: onSubmitPrompt,
+                        onCancelPrompt: onCancelPrompt,
+                        onStartRecording: onStartRecording,
+                        onStopRecording: onStopRecording,
+                      );
+
+                      Widget? wgtTrailingWidget;
+                      if (_viewModel!.inputTrailingWidget != null &&
+                          (_inputState == InputState.disabled ||
+                              _inputState == InputState.canStt)) {
+                        wgtTrailingWidget = _viewModel!.inputTrailingWidget!;
+                      }
+
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              if (_viewModel!.enableAttachments)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 14),
+                                  child: wgtAttachments,
+                                ),
+                              wgtFieldInput,
+                            ],
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 8,
+                                children: [
+                                  wgtInputButton,
+                                  if (wgtTrailingWidget != null)
+                                    wgtTrailingWidget,
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
             ),
           ],

@@ -92,6 +92,10 @@ class LlmChatView extends StatefulWidget {
     this.enableCancel = true,
     this.advertisingMessage,
     this.emptyBuilder,
+    this.inputTrailingWidget,
+    this.inputLeadingWidget,
+    this.builderMessageHeader,
+    this.builderMessageFooter,
     super.key,
   }) : viewModel = ChatViewModel(
          provider: provider,
@@ -104,6 +108,10 @@ class LlmChatView extends StatefulWidget {
          enableVoiceNotes: enableVoiceNotes,
          enableCancel: enableCancel,
          advertisingMessage: advertisingMessage,
+         inputTrailingWidget: inputTrailingWidget,
+         inputLeadingWidget: inputLeadingWidget,
+         builderMessageHeader: builderMessageHeader,
+         builderMessageFooter: builderMessageFooter,
        );
 
   /// Whether to enable file and image attachments in the chat input.
@@ -156,6 +164,28 @@ class LlmChatView extends StatefulWidget {
   ///
   /// this widget replace the list view with the messages when the history is empty.
   final Widget Function(BuildContext context)? emptyBuilder;
+
+  /// Trailing widget on the input field
+  final Widget? inputTrailingWidget;
+
+  /// Leading widget on the input field
+  final Widget? inputLeadingWidget;
+
+  /// Optional builder for the message data to show above of the message container
+  final Widget Function(
+    BuildContext context,
+    ChatMessage message,
+    Map<String, dynamic> metadata,
+  )?
+  builderMessageHeader;
+
+  /// Optional builder for the message footer to show below of the message container
+  final Widget Function(
+    BuildContext context,
+    ChatMessage message,
+    Map<String, dynamic> metadata,
+  )?
+  builderMessageFooter;
 
   @override
   State<LlmChatView> createState() => _LlmChatViewState();
@@ -236,7 +266,7 @@ class _LlmChatViewState extends State<LlmChatView>
                         widget.viewModel.enableCancel && _isRunning
                             ? widget.viewModel.provider.onCancelMessage
                             : null,
-                    onTranslateStt: _onTranslateStt,
+                    onTranslateStt: widget.viewModel.provider.onSendAudio,
                     onCancelStt:
                         _pendingSttResponse == null ? null : _onCancelStt,
                     advertisingMessage: widget.viewModel.advertisingMessage,
@@ -273,97 +303,7 @@ class _LlmChatViewState extends State<LlmChatView>
     });
   }
 
-  Future<void> _onTranslateStt(
-    XFile file,
-    Iterable<Attachment> currentAttachments,
-  ) async {
-    assert(widget.enableVoiceNotes);
-    _initialMessage = null;
-    _associatedResponse = null;
-
-    // use the LLM to translate the attached audio to text
-    const prompt =
-        'translate the attached audio to text; provide the result of that '
-        'translation as just the text of the translation itself. be careful to '
-        'separate the background audio from the foreground audio and only '
-        'provide the result of translating the foreground audio.';
-    final attachments = [await FileAttachment.fromFile(file)];
-
-    var response = '';
-    // _pendingSttResponse = LlmResponse(
-    //   stream: widget.viewModel.provider.generateStream(
-    //     // prompt,
-    //     // attachments: attachments,
-    //   ),
-    //   onUpdate: (text) => response += text,
-    //   onDone:
-    //       (error) async =>
-    //           _onSttDone(error, response, file, currentAttachments),
-    // );
-
-    setState(() {});
-  }
-
-  Future<void> _onSttDone(
-    LlmException? error,
-    String response,
-    XFile file,
-    Iterable<Attachment> attachments,
-  ) async {
-    assert(_pendingSttResponse != null);
-    setState(() {
-      // Preserve any existing attachments from the current input
-      //todo: sistemare la creazione dei messaggi
-      _initialMessage = ChatMessage.user('', response, attachments);
-      _pendingSttResponse = null;
-    });
-
-    // delete the file now that the LLM has translated it
-    unawaited(ph.deleteFile(file));
-
-    // show any error that occurred
-    unawaited(_showLlmException(error));
-  }
-
   void _onCancelStt() => _pendingSttResponse?.cancel();
-
-  Future<void> _showLlmException(LlmException? error) async {
-    if (error == null) return;
-
-    // stop from the progress from indicating in case there was a failure
-    // before any text response happened; the progress indicator uses a null
-    // text message to keep progressing. plus we don't want to just show an
-    // empty LLM message.
-    final llmMessage = widget.viewModel.provider.history.last;
-    if (llmMessage.text == null) {
-      llmMessage.append(
-        error is LlmCancelException
-            ? widget.cancelMessage
-            : widget.errorMessage,
-      );
-    }
-
-    switch (error) {
-      case LlmCancelException():
-        if (widget.onCancelCallback != null) {
-          widget.onCancelCallback!(context);
-        } else {
-          AdaptiveSnackBar.show(context, 'LLM operation canceled by user');
-        }
-        break;
-      case LlmFailureException():
-      case LlmException():
-        if (widget.onErrorCallback != null) {
-          widget.onErrorCallback!(context, error);
-        } else {
-          await AdaptiveAlertDialog.show(
-            context: context,
-            content: Text(error.toString()),
-            showOK: true,
-          );
-        }
-    }
-  }
 
   void _listenerHistory() {
     // if the history is cleared, clear the initial message

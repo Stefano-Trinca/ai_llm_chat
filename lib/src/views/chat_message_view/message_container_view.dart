@@ -6,7 +6,6 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../utils/theme_utils.dart';
-import '../../views/jumping_dots_progress_indicator/jumping_dots_progress_indicator.dart';
 import 'hovering_buttons.dart';
 
 /// A widget that displays a chat message container with customizable appearance and content.
@@ -32,6 +31,8 @@ class MessageContainerView extends StatelessWidget {
     this.styleSheet,
     this.responseBuilder,
     this.isWelcomeMessage = false,
+    this.builderMessageHeader,
+    this.builderMessageFooter,
   });
 
   /// The message that this container displays
@@ -51,6 +52,22 @@ class MessageContainerView extends StatelessWidget {
 
   /// Optional builder for customizing the response widget.
   final Widget Function(BuildContext, String)? responseBuilder;
+
+  /// Optional builder for the message data to show above of the message container
+  final Widget Function(
+    BuildContext context,
+    ChatMessage message,
+    Map<String, dynamic> metadata,
+  )?
+  builderMessageHeader;
+
+  /// Optional builder for the message footer to show below of the message container
+  final Widget Function(
+    BuildContext context,
+    ChatMessage message,
+    Map<String, dynamic> metadata,
+  )?
+  builderMessageFooter;
 
   /// Indicates if this message is a welcome message.
   final bool isWelcomeMessage;
@@ -121,6 +138,45 @@ class MessageContainerView extends StatelessWidget {
       );
     }
 
+    final wgtMessageContent = AdaptiveCopyText(
+      clipboardText: text,
+      chatStyle: chatStyle,
+      onEdit: onEdit,
+      child:
+          isWelcomeMessage || responseBuilder == null
+              ? MarkdownBody(
+                data: text,
+                selectable: false,
+                styleSheet: styleSheet,
+              )
+              : responseBuilder!(context, text),
+    );
+
+    final wgtContent =
+        ((message.headerMetadata.isNotEmpty && builderMessageHeader != null) ||
+                (message.metadata.isNotEmpty && builderMessageFooter != null))
+            ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (message.headerMetadata.isNotEmpty &&
+                    builderMessageHeader != null)
+                  builderMessageHeader!.call(
+                    context,
+                    message,
+                    message.headerMetadata,
+                  ),
+                wgtMessageContent,
+                if (message.metadata.isNotEmpty && builderMessageFooter != null)
+                  builderMessageFooter!.call(
+                    context,
+                    message,
+                    message.metadata,
+                  ),
+              ],
+            )
+            : wgtMessageContent;
+
     return HoveringButtons(
       isUserMessage: isUserMessage,
       chatStyle: chatStyle,
@@ -129,28 +185,7 @@ class MessageContainerView extends StatelessWidget {
       child: Container(
         decoration: messageStyle.decoration,
         padding: messageStyle.padding,
-        child:
-            text == null
-                ? SizedBox(
-                  width: 40,
-                  child: JumpingDotsProgressIndicator(
-                    fontSize: 40,
-                    color: chatStyle.progressIndicatorColor!,
-                  ),
-                )
-                : AdaptiveCopyText(
-                  clipboardText: text,
-                  chatStyle: chatStyle,
-                  onEdit: onEdit,
-                  child:
-                      isWelcomeMessage || responseBuilder == null
-                          ? MarkdownBody(
-                            data: text,
-                            selectable: false,
-                            styleSheet: styleSheet,
-                          )
-                          : responseBuilder!(context, text),
-                ),
+        child: wgtContent,
       ),
     );
   }

@@ -49,6 +49,8 @@ class UserMessageView extends StatelessWidget {
         styleSheet: userStyle.markdownStyle,
         onEdit: onEdit,
         responseBuilder: viewModel.responseBuilder,
+        builderMessageFooter: viewModel.builderMessageFooter,
+        builderMessageHeader: viewModel.builderMessageHeader,
       );
 
       return MessageRowView(

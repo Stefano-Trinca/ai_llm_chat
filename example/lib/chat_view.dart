@@ -12,7 +12,7 @@ class ChatView extends StatelessWidget {
     return LlmChatView(
       provider: TestLlmProvider(),
       enableAttachments: false,
-      enableVoiceNotes: false,
+      enableVoiceNotes: true,
       enableCancel: true,
       // advertisingMessage:
       //     'Questo assistente può commettere errori. Non fidarti ciecamente delle sue risposte.',
@@ -41,7 +41,12 @@ class ChatView extends StatelessWidget {
         chatInputStyle: ChatInputStyle.context(
           context,
         ).copyWith(hintText: 'Scrivi il tuo messaggio...'),
+        recordButtonStyle: ActionButtonStyle.context(
+          context,
+          ActionButtonType.record,
+        ).copyWith(icon: SolarIconsOutline.microphone2),
       ),
+
       emptyBuilder: (context) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,6 +62,28 @@ class ChatView extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
+        );
+      },
+
+      inputTrailingWidget: IconButton(
+        onPressed: () {},
+        icon: Icon(SolarIconsOutline.menuDots),
+      ),
+
+      builderMessageFooter: (context, message, metadata) {
+        final source = metadata['source'] ?? 'Sconosciuto';
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Row(
+            children: [
+              Icon(SolarIconsOutline.link, size: 16),
+              SizedBox(width: 4),
+              Text(
+                'Fonte: $source',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
         );
       },
     );

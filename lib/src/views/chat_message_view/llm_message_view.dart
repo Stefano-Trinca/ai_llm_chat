@@ -50,6 +50,8 @@ class LlmMessageView extends StatelessWidget {
         styleSheet: llmStyle.markdownStyle,
         responseBuilder: viewModel.responseBuilder,
         streamText: viewModel.provider.generateStream(message),
+        builderMessageFooter: viewModel.builderMessageFooter,
+        builderMessageHeader: viewModel.builderMessageHeader,
       );
 
       return MessageRowView(

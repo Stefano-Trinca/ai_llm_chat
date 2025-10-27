@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 
-import '../providers/interface/llm_provider.dart';
-import '../styles/llm_chat_view_style.dart';
+import '../../flutter_ai_toolkit.dart';
 import '../views/response_builder.dart';
 
 @immutable
@@ -36,6 +35,10 @@ class ChatViewModel {
     required this.enableVoiceNotes,
     required this.enableCancel,
     required this.advertisingMessage,
+    required this.inputTrailingWidget,
+    required this.inputLeadingWidget,
+    required this.builderMessageHeader,
+    required this.builderMessageFooter,
   });
 
   /// The LLM provider for the chat interface.
@@ -93,6 +96,28 @@ class ChatViewModel {
   /// An optional advertising message to display in the chat interface.
   final String? advertisingMessage;
 
+  /// Trailing widget on the input field
+  final Widget? inputTrailingWidget;
+
+  /// Leading widget on the input field
+  final Widget? inputLeadingWidget;
+
+  /// Optional builder for the message data to show above of the message container
+  final Widget Function(
+    BuildContext context,
+    ChatMessage message,
+    Map<String, dynamic> metadata,
+  )?
+  builderMessageHeader;
+
+  /// Optional builder for the message footer to show below of the message container
+  final Widget Function(
+    BuildContext context,
+    ChatMessage message,
+    Map<String, dynamic> metadata,
+  )?
+  builderMessageFooter;
+
   // The following is needed to support the
   // ChatViewModelProvider.updateShouldNotify implementation
   @override
@@ -108,7 +133,11 @@ class ChatViewModel {
           other.enableAttachments == enableAttachments &&
           other.enableVoiceNotes == enableVoiceNotes &&
           other.enableCancel == enableCancel &&
-          other.advertisingMessage == advertisingMessage);
+          other.advertisingMessage == advertisingMessage &&
+          other.inputTrailingWidget == inputTrailingWidget &&
+          other.inputLeadingWidget == inputLeadingWidget &&
+          other.builderMessageHeader == builderMessageHeader &&
+          other.builderMessageFooter == builderMessageFooter);
 
   // the following is best practices when overriding operator ==
   @override
@@ -123,5 +152,9 @@ class ChatViewModel {
     enableVoiceNotes,
     enableCancel,
     advertisingMessage,
+    inputTrailingWidget,
+    inputLeadingWidget,
+    builderMessageHeader,
+    builderMessageFooter,
   );
 }

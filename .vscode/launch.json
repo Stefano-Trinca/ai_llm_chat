@@ -10,7 +10,7 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
-            "deviceId": "Chrome"
+            "deviceId": "chrome"
         },
         {
             "name": "example (profile mode)",
