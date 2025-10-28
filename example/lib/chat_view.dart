@@ -45,6 +45,10 @@ class ChatView extends StatelessWidget {
           context,
           ActionButtonType.record,
         ).copyWith(icon: SolarIconsOutline.microphone2),
+        stopButtonStyle: ActionButtonStyle.context(
+          context,
+          ActionButtonType.stop,
+        ).copyWith(icon: SolarIconsOutline.stop),
       ),
 
       emptyBuilder: (context) {

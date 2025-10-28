@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:async';
-
-import 'package:cross_file/cross_file.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../chat_view_model/chat_view_model.dart';
 import '../../chat_view_model/chat_view_model_provider.dart';
-import '../../dialogs/adaptive_dialog.dart';
-import '../../dialogs/adaptive_snack_bar/adaptive_snack_bar.dart';
 import '../../llm_exception.dart';
-import '../../platform_helper/platform_helper.dart' as ph;
-import '../../providers/interface/attachments.dart';
 import '../../providers/interface/chat_message.dart';
 import '../../providers/interface/llm_provider.dart';
 import '../../styles/llm_chat_view_style.dart';

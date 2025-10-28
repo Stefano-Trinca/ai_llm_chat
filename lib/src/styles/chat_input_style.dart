@@ -18,6 +18,9 @@ class ChatInputStyle {
     this.hintText,
     this.containerDecoration,
     this.fieldDecoration,
+    this.actionsAxisAlign = Axis.vertical,
+    this.recorderWaveColor,
+    this.recorderDurationTextStyle,
   });
 
   /// Merges the provided styles with the default styles.
@@ -36,6 +39,13 @@ class ChatInputStyle {
       containerDecoration:
           style?.containerDecoration ?? defaultStyle.containerDecoration,
       fieldDecoration: style?.fieldDecoration ?? defaultStyle.fieldDecoration,
+      actionsAxisAlign:
+          style?.actionsAxisAlign ?? defaultStyle.actionsAxisAlign,
+      recorderWaveColor:
+          style?.recorderWaveColor ?? defaultStyle.recorderWaveColor,
+      recorderDurationTextStyle:
+          style?.recorderDurationTextStyle ??
+          defaultStyle.recorderDurationTextStyle,
     );
   }
 
@@ -59,6 +69,11 @@ class ChatInputStyle {
       border: Border.all(width: 1, color: ToolkitColors.outline),
       borderRadius: BorderRadius.circular(24),
     ),
+    actionsAxisAlign: Axis.vertical,
+    recorderWaveColor: ToolkitColors.tooltipText,
+    recorderDurationTextStyle: ToolkitTextStyles.label.copyWith(
+      color: ToolkitColors.tooltipText,
+    ),
   );
 
   /// Provides a default light style.
@@ -78,6 +93,14 @@ class ChatInputStyle {
       fieldDecoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(24),
+      ),
+      actionsAxisAlign:
+          MediaQuery.of(context).size.width < 700
+              ? Axis.vertical
+              : Axis.horizontal,
+      recorderWaveColor: theme.colorScheme.onSurfaceVariant,
+      recorderDurationTextStyle: theme.textTheme.labelLarge?.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
       ),
     );
   }
@@ -100,6 +123,15 @@ class ChatInputStyle {
   /// The decoration of the input box.
   final Decoration? fieldDecoration;
 
+  /// Axis align of the actions like send button with the input field.
+  final Axis actionsAxisAlign;
+
+  /// Recorder wave color
+  final Color? recorderWaveColor;
+
+  /// Recorder duration text style
+  final TextStyle? recorderDurationTextStyle;
+
   /// Creates a copy of this [ChatInputStyle] but with the given fields replaced with the new values.
   ChatInputStyle copyWith({
     TextStyle? textStyle,
@@ -108,6 +140,9 @@ class ChatInputStyle {
     String? hintText,
     Decoration? containerDecoration,
     Decoration? fieldDecoration,
+    Axis? actionsAxisAlign,
+    Color? recorderWaveColor,
+    TextStyle? recorderDurationTextStyle,
   }) {
     return ChatInputStyle(
       textStyle: textStyle ?? this.textStyle,
@@ -117,6 +152,10 @@ class ChatInputStyle {
       hintText: hintText ?? this.hintText,
       containerDecoration: containerDecoration ?? this.containerDecoration,
       fieldDecoration: fieldDecoration ?? this.fieldDecoration,
+      actionsAxisAlign: actionsAxisAlign ?? this.actionsAxisAlign,
+      recorderWaveColor: recorderWaveColor ?? this.recorderWaveColor,
+      recorderDurationTextStyle:
+          recorderDurationTextStyle ?? this.recorderDurationTextStyle,
     );
   }
 }

@@ -84,6 +84,8 @@ class TextOrAudioInput extends StatelessWidget {
                       controller: _waveController,
                       height: _minInputHeight,
                       onRecordingStopped: _onRecordingStopped,
+                      waveColor: _inputStyle.recorderWaveColor!,
+                      durationTextStyle: _inputStyle.recorderDurationTextStyle!,
                     )
                     : ChatTextField(
                       minLines: 1,

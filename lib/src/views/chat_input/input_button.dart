@@ -65,7 +65,7 @@ class InputButton extends StatelessWidget {
       onPressed: onStartRecording,
     ),
     InputState.isRecording => ActionButton(
-      style: chatStyle.stopButtonStyle!,
+      style: chatStyle.submitButtonStyle!,
       onPressed: onStopRecording,
     ),
     InputState.canCancelStt => AdaptiveCircularProgressIndicator(

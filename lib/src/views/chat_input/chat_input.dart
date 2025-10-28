@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:developer' as dev;
+
+import 'package:ai_llm_chat/src/views/action_button.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
@@ -203,37 +206,61 @@ class _ChatInputState extends State<ChatInput> {
                         wgtTrailingWidget = _viewModel!.inputTrailingWidget!;
                       }
 
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
+                      final wgtTrailingActions = Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: [
+                            if (_inputState == InputState.isRecording)
+                              _stopRecordingButton(context),
+                            wgtInputButton,
+                            if (wgtTrailingWidget != null) wgtTrailingWidget,
+                          ],
+                        ),
+                      );
+
+                      if (_chatStyle?.chatInputStyle?.actionsAxisAlign ==
+                          Axis.horizontal) {
+                        // horizontal layout
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               if (_viewModel!.enableAttachments)
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 14),
+                                  padding: const EdgeInsets.only(bottom: 12),
                                   child: wgtAttachments,
                                 ),
                               wgtFieldInput,
+                              wgtTrailingActions,
                             ],
                           ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                spacing: 8,
-                                children: [
-                                  wgtInputButton,
-                                  if (wgtTrailingWidget != null)
-                                    wgtTrailingWidget,
-                                ],
-                              ),
+                        );
+                      } else {
+                        // vertical layout
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                if (_viewModel!.enableAttachments)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 14),
+                                    child: wgtAttachments,
+                                  ),
+                                wgtFieldInput,
+                              ],
                             ),
-                          ),
-                        ],
-                      );
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: wgtTrailingActions,
+                            ),
+                          ],
+                        );
+                      }
                     },
                   ),
             ),
@@ -250,6 +277,13 @@ class _ChatInputState extends State<ChatInput> {
         ),
     ],
   );
+
+  Widget _stopRecordingButton(BuildContext context) {
+    return ActionButton(
+      style: _chatStyle!.stopButtonStyle!,
+      onPressed: () => onRecordingDelete(),
+    );
+  }
 
   InputState get _inputState {
     if (_waveController.isRecording) return InputState.isRecording;
@@ -294,12 +328,23 @@ class _ChatInputState extends State<ChatInput> {
     final file = _waveController.file;
 
     if (file == null) {
-      AdaptiveSnackBar.show(context, 'Unable to record audio');
+      // AdaptiveSnackBar.show(context, 'Unable to record audio');
       return;
     }
 
     // Pass current attachments to onTranslateStt
     widget.onTranslateStt(file, List.from(_attachments));
+  }
+
+  Future<void> onRecordingDelete() async {
+    try {
+      await _waveController.cancelRecording();
+    } catch (e, stack) {
+      dev.log(
+        'onRecordingDelete > Exception while stopping/cancelling recording: $e',
+        stackTrace: stack,
+      );
+    }
   }
 
   void onAttachments(Iterable<Attachment> attachments) {
