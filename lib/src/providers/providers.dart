@@ -7,4 +7,5 @@ export 'implementations/firebase_provider.dart';
 export 'interface/attachments.dart';
 export 'interface/chat_message.dart';
 export 'interface/llm_provider.dart';
+export 'interface/message_action.dart';
 export 'interface/message_origin.dart';

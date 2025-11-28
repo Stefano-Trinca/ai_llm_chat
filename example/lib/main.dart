@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'app_theme.dart';
 import 'chat_view.dart';
 
 void main() async {
@@ -14,9 +13,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Chat AI Sample',
-    theme: AppTheme.light,
-    themeMode: ThemeMode.dark,
-    darkTheme: AppTheme.dark,
+    theme: ThemeData.from(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    ),
     home: ChatPage(),
   );
 }

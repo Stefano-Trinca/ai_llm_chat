@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:ai_llm_chat/src/providers/interface/message_action.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../chat_view_model/chat_view_model.dart';
@@ -89,6 +90,8 @@ class LlmChatView extends StatefulWidget {
     this.inputLeadingWidget,
     this.builderMessageHeader,
     this.builderMessageFooter,
+    this.llmMessageActions = const [],
+    this.userMessageActions = const [],
     super.key,
   }) : viewModel = ChatViewModel(
          provider: provider,
@@ -105,6 +108,8 @@ class LlmChatView extends StatefulWidget {
          inputLeadingWidget: inputLeadingWidget,
          builderMessageHeader: builderMessageHeader,
          builderMessageFooter: builderMessageFooter,
+         llmMessageActions: llmMessageActions,
+         userMessageActions: userMessageActions,
        );
 
   /// Whether to enable file and image attachments in the chat input.
@@ -179,6 +184,12 @@ class LlmChatView extends StatefulWidget {
     Map<String, dynamic> metadata,
   )?
   builderMessageFooter;
+
+  /// Optional [MessageAction] for the user message
+  final List<MessageAction> userMessageActions;
+
+  /// Optional [MessageAction] for the LLM message
+  final List<MessageAction> llmMessageActions;
 
   @override
   State<LlmChatView> createState() => _LlmChatViewState();

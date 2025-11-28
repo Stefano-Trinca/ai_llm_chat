@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-import '../../views/chat_message_view/message_container_view.dart';
-import '../../views/chat_message_view/message_row_view.dart';
 
 import '../../chat_view_model/chat_view_model_client.dart';
 import '../../providers/interface/chat_message.dart';
 import '../../styles/styles.dart';
+import '../../views/chat_message_view/message_container_view.dart';
+import '../../views/chat_message_view/message_row_view.dart';
 import 'avatar_message_view.dart';
 
 /// A widget that displays a user's message in a chat interface.
@@ -51,6 +51,8 @@ class UserMessageView extends StatelessWidget {
         responseBuilder: viewModel.responseBuilder,
         builderMessageFooter: viewModel.builderMessageFooter,
         builderMessageHeader: viewModel.builderMessageHeader,
+        llmMessageActions: viewModel.llmMessageActions,
+        userMessageActions: viewModel.userMessageActions,
       );
 
       return MessageRowView(

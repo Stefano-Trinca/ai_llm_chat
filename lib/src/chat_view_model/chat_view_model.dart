@@ -5,6 +5,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../flutter_ai_toolkit.dart';
+import '../providers/interface/message_action.dart';
 import '../views/response_builder.dart';
 
 @immutable
@@ -39,6 +40,8 @@ class ChatViewModel {
     required this.inputLeadingWidget,
     required this.builderMessageHeader,
     required this.builderMessageFooter,
+    required this.userMessageActions,
+    required this.llmMessageActions,
   });
 
   /// The LLM provider for the chat interface.
@@ -118,6 +121,12 @@ class ChatViewModel {
   )?
   builderMessageFooter;
 
+  /// Optional [MessageAction] for the user message
+  final List<MessageAction> userMessageActions;
+
+  /// Optional [MessageAction] for the LLM message
+  final List<MessageAction> llmMessageActions;
+
   // The following is needed to support the
   // ChatViewModelProvider.updateShouldNotify implementation
   @override
@@ -137,7 +146,9 @@ class ChatViewModel {
           other.inputTrailingWidget == inputTrailingWidget &&
           other.inputLeadingWidget == inputLeadingWidget &&
           other.builderMessageHeader == builderMessageHeader &&
-          other.builderMessageFooter == builderMessageFooter);
+          other.builderMessageFooter == builderMessageFooter &&
+          other.userMessageActions == userMessageActions &&
+          other.llmMessageActions == llmMessageActions);
 
   // the following is best practices when overriding operator ==
   @override
@@ -156,5 +167,7 @@ class ChatViewModel {
     inputLeadingWidget,
     builderMessageHeader,
     builderMessageFooter,
+    userMessageActions,
+    llmMessageActions,
   );
 }

@@ -167,7 +167,7 @@ class ActionButtonStyle {
         text = 'Cancel';
         break;
       case ActionButtonType.copy:
-        icon = ToolkitIcons.content_copy;
+        icon = Icons.copy;
         text = 'Copy to Clipboard';
         break;
       case ActionButtonType.edit:

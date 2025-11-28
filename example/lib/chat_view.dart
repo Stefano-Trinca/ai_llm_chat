@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
+import 'package:flutter/material.dart';
 import 'package:solar_icons/solar_icons.dart';
 
 import 'provider.dart';
@@ -90,6 +90,20 @@ class ChatView extends StatelessWidget {
           ),
         );
       },
+      llmMessageActions: [
+        MessageAction(
+          icon: Icons.copy_rounded,
+          label: 'Copia',
+          onPressed: (message) => print('Copia LLM: ${message.text}'),
+        ),
+      ],
+      userMessageActions: [
+        // MessageAction(
+        //   icon: Icons.copy_rounded,
+        //   label: 'Copia',
+        //   onPressed: (message) => print('Copia User: ${message.text}'),
+        // ),
+      ],
     );
   }
 }
