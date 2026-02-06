@@ -200,10 +200,10 @@ class _MessageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = message.text;
+    final text = message.text ?? '';
 
     // Handle status messages (loading state)
-    if (text == null) {
+    if (text.isEmpty && message.statusMessage.isNotEmpty) {
       return _StatusMessage(messageStyle: messageStyle);
     }
 

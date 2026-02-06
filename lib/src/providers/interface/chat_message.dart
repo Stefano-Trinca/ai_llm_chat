@@ -28,11 +28,12 @@ class ChatMessage {
     required this.origin,
     required this.text,
     this.status = '',
-    this.statusMessage,
+    this.statusMessage = '',
     required this.attachments,
     this.headerMetadata = const {},
     this.metadata = const {},
-  }) : assert(origin.isUser && text != null && text.isNotEmpty || origin.isLlm);
+  });
+  // : assert(origin.isUser && text != null && text.isNotEmpty || origin.isLlm);
 
   /// Converts a JSON map representation to a [ChatMessage].
   ///
@@ -50,7 +51,7 @@ class ChatMessage {
     origin: MessageOrigin.values.byName(map['origin'] as String),
     text: map['text'] as String,
     status: map['status'] as String? ?? '',
-    statusMessage: map['statusMessage'] as String?,
+    statusMessage: map['statusMessage'] as String? ?? '',
     attachments: [
       for (final attachment in map['attachments'] as List<dynamic>)
         switch (attachment['type'] as String) {
@@ -78,7 +79,7 @@ class ChatMessage {
     origin: MessageOrigin.llm,
     text: null,
     status: '',
-    statusMessage: null,
+    statusMessage: '',
     attachments: [],
     headerMetadata: {},
     metadata: {},
@@ -99,7 +100,7 @@ class ChatMessage {
     origin: MessageOrigin.user,
     text: text,
     status: '',
-    statusMessage: null,
+    statusMessage: '',
     attachments: attachments,
     headerMetadata: headerMetadata ?? const {},
     metadata: metadata ?? const {},
@@ -125,7 +126,7 @@ class ChatMessage {
   final String status;
 
   /// the status message of the message, that can be used to display when the text is null
-  String? statusMessage;
+  final String statusMessage;
 
   /// Header metadata
   /// those metadata can be used to display additional widget before the message content
@@ -143,11 +144,6 @@ class ChatMessage {
 
   /// Replace the currente text with the provided text.
   void replace(String text) => this.text = text;
-
-  /// Replace the current status message with the provided text.
-  ///
-  /// if null the status message will be removed.
-  void replaceStatusMessage(String? text) => statusMessage = text;
 
   /// Returns a copy of this [ChatMessage] with the given fields replaced.
   ChatMessage copyWith({

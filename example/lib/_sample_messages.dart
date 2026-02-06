@@ -198,6 +198,15 @@ final List<ChatMessage> sampleMessages = [
   ),
   ChatMessage(
     id: '9',
+    origin: MessageOrigin.user,
+    // text: '',
+    text: null,
+    status: 'transcribing',
+    statusMessage: 'Sto trascrivendo il tuo messaggio...',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '9',
     origin: MessageOrigin.llm,
     text: 'questo è il risultato',
     statusMessage: 'Sto elaborando la tua richiesta...',
