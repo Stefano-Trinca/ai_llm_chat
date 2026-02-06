@@ -4,11 +4,11 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+
 import '../styles/avatar_message_style.dart';
 import '../styles/toolkit_markdown.dart';
 import '../styles/toolkit_text_styles.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-
 import 'toolkit_colors.dart';
 
 /// Style for generic messages.
@@ -24,6 +24,7 @@ class MessageStyle {
     this.textStyle,
     this.statusMessageStyle,
     this.statusMessageShimmerColors,
+    this.actionButtonStyle,
   });
 
   /// Resolves the provided style with the default style.
@@ -88,12 +89,33 @@ class MessageStyle {
     statusMessageShimmerColors: (Colors.grey, Colors.white),
   );
 
+  /// Default message based on the theme of context
+  factory MessageStyle.context(BuildContext context) {
+    final theme = Theme.of(context);
+    return MessageStyle(
+      avatarStyle: AvatarMessageStyle.context(context),
+      markdownStyle: ToolkitMarkdown.ofContext(context),
+      textStyle: theme.textTheme.bodyMedium,
+      statusMessageStyle: theme.textTheme.bodyMedium,
+      statusMessageShimmerColors: (
+        theme.colorScheme.onSurfaceVariant.withAlpha(120),
+        theme.colorScheme.onSurfaceVariant,
+      ),
+      actionButtonStyle: IconButton.styleFrom(
+        minimumSize: Size(20, 20),
+        padding: EdgeInsets.all(2),
+        iconSize: 20,
+        foregroundColor: theme.iconTheme.color?.withAlpha(100),
+      ),
+    );
+  }
+
   /// Provides a style user based on the current theme context.
   factory MessageStyle.contextUser(BuildContext context) {
     final theme = Theme.of(context);
-    return MessageStyle(
+    return MessageStyle.context(context).copyWith(
       showAvatar: false,
-      avatarStyle: AvatarMessageStyle.context(context),
+      padding: _defaultPaddingUser,
       decoration: BoxDecoration(
         color: theme.colorScheme.primaryContainer,
         // border: Border.all(color: theme.colorScheme.outline),
@@ -104,23 +126,15 @@ class MessageStyle {
           bottomRight: Radius.circular(20),
         ),
       ),
-      markdownStyle: ToolkitMarkdown.ofContext(context),
-      padding: _defaultPaddingUser,
-      textStyle: theme.textTheme.bodyMedium,
-      statusMessageStyle: theme.textTheme.bodyMedium,
-      statusMessageShimmerColors: (
-        theme.colorScheme.onSurfaceVariant.withAlpha(120),
-        theme.colorScheme.onSurfaceVariant,
-      ),
     );
   }
 
   /// Provides a style user based on the current theme context.
   factory MessageStyle.contextLLM(BuildContext context) {
     final theme = Theme.of(context);
-    return MessageStyle(
-      showAvatar: true,
-      avatarStyle: AvatarMessageStyle.context(context),
+    return MessageStyle.context(context).copyWith(
+      showAvatar: false,
+      padding: _defaultPaddingLLM,
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHigh,
         // border: Border.all(color: theme.colorScheme.outline),
@@ -130,14 +144,6 @@ class MessageStyle {
           bottomLeft: Radius.circular(20),
           bottomRight: Radius.circular(20),
         ),
-      ),
-      markdownStyle: ToolkitMarkdown.ofContext(context),
-      padding: _defaultPaddingLLM,
-      textStyle: theme.textTheme.bodyMedium,
-      statusMessageStyle: theme.textTheme.bodyMedium,
-      statusMessageShimmerColors: (
-        theme.colorScheme.onSurfaceVariant.withAlpha(120),
-        theme.colorScheme.onSurfaceVariant,
       ),
     );
   }
@@ -166,6 +172,19 @@ class MessageStyle {
   /// The shimmer colors for status messages.
   final (Color baseColor, Color hilightColor)? statusMessageShimmerColors;
 
+  /// Style of the actions under the message container
+  ///
+  /// default is:
+  /// ```
+  /// IconButton.styleFrom(
+  ///     minimumSize: Size(20, 20),
+  ///     padding: EdgeInsets.all(2),
+  ///     iconSize: 20,
+  ///     foregroundColor: context.theme.iconTheme.color?.withAlpha(100),
+  ///   )
+  /// ```
+  final ButtonStyle? actionButtonStyle;
+
   static const EdgeInsets _defaultPaddingLLM = EdgeInsets.all(8);
   static const EdgeInsets _defaultPaddingUser = EdgeInsets.all(16);
 
@@ -179,6 +198,7 @@ class MessageStyle {
     TextStyle? textStyle,
     TextStyle? statusMessageStyle,
     (Color baseColor, Color hilightColor)? statusMessageShimmerColors,
+    ButtonStyle? actionButtonStyle,
   }) {
     return MessageStyle(
       showAvatar: showAvatar ?? this.showAvatar,
@@ -190,6 +210,7 @@ class MessageStyle {
       statusMessageStyle: statusMessageStyle ?? this.statusMessageStyle,
       statusMessageShimmerColors:
           statusMessageShimmerColors ?? this.statusMessageShimmerColors,
+      actionButtonStyle: actionButtonStyle ?? this.actionButtonStyle,
     );
   }
 }

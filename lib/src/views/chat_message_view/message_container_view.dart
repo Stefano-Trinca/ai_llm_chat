@@ -421,6 +421,10 @@ class _MessageContainerActionsState extends State<MessageContainerActions> {
             key: ValueKey(action.label),
             action: action,
             message: widget.message,
+            style:
+                widget.isUserMessage
+                    ? widget.chatStyle.userMessageStyle?.actionButtonStyle
+                    : widget.chatStyle.llmMessageStyle?.actionButtonStyle,
           ),
       ],
     );
@@ -482,25 +486,27 @@ class MessageContainerActionButton extends StatelessWidget {
     super.key,
     required this.action,
     required this.message,
+    this.style,
   });
-
-  static const double _iconSize = 16.0;
-  static const EdgeInsets _padding = EdgeInsets.all(4.0);
 
   final MessageAction action;
   final ChatMessage message;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: action.label,
-      child: InkWell(
-        onTap: () => action.onPressed?.call(message),
-        child: Padding(
-          padding: _padding,
-          child: Icon(action.icon, size: _iconSize),
-        ),
-      ),
+    return IconButton(
+      style:
+          style ??
+          IconButton.styleFrom(
+            minimumSize: Size(20, 20),
+            padding: EdgeInsets.all(2),
+            iconSize: 20,
+            foregroundColor: context.theme.iconTheme.color?.withAlpha(100),
+          ),
+      tooltip: action.label,
+      onPressed: () => action.onPressed?.call(message),
+      icon: Icon(action.icon),
     );
   }
 }
