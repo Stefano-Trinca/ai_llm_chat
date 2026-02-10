@@ -4,13 +4,32 @@ import 'package:solar_icons/solar_icons.dart';
 
 import 'provider.dart';
 
-class ChatView extends StatelessWidget {
+class ChatView extends StatefulWidget {
   const ChatView({super.key});
+
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  late final TestLlmProvider provider;
+
+  @override
+  void initState() {
+    super.initState();
+    provider = TestLlmProvider();
+  }
+
+  @override
+  void dispose() {
+    provider.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return LlmChatView(
-      provider: TestLlmProvider(),
+      provider: provider,
       enableAttachments: false,
       enableVoiceNotes: true,
       enableCancel: true,
@@ -66,6 +85,16 @@ class ChatView extends StatelessWidget {
             Text(
               'Come posso aiutarti oggi?',
               style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            InputChip(
+              label: Text('Esempio: "Qual è il tempo a Roma?"'),
+              onPressed: () {
+                provider.textInputController.text = 'Qual è il tempo a Roma?';
+                provider.inputFocusNode.requestFocus();
+                print(
+                  "provider textcontroller = ${provider.textInputController.text}",
+                );
+              },
             ),
           ],
         );

@@ -70,25 +70,20 @@ class ChatTextField extends StatefulWidget {
 }
 
 class _ChatTextFieldState extends State<ChatTextField> {
-  late final TextEditingController _controller;
-  late final FocusNode _focusNode;
-
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller;
-    _focusNode = widget.focusNode;
-    _focusNode.onKeyEvent = _handleKeyEvent;
+    widget.focusNode.onKeyEvent = _handleKeyEvent;
   }
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
       if (HardwareKeyboard.instance.isShiftPressed) {
         // Inserisci newline
-        final text = _controller.text;
-        final pos = _controller.selection.baseOffset;
-        _controller.text = text.replaceRange(pos, pos, '\n');
-        _controller.selection = TextSelection.collapsed(offset: pos + 1);
+        final text = widget.controller.text;
+        final pos = widget.controller.selection.baseOffset;
+        widget.controller.text = text.replaceRange(pos, pos, '\n');
+        widget.controller.selection = TextSelection.collapsed(offset: pos + 1);
       } else {
         _sendMessage();
       }
@@ -98,7 +93,7 @@ class _ChatTextFieldState extends State<ChatTextField> {
   }
 
   void _sendMessage() {
-    final text = _controller.text;
+    final text = widget.controller.text;
     if (text.isNotEmpty) {
       widget.onSubmitted(text);
       // _controller.clear();
@@ -118,7 +113,7 @@ class _ChatTextFieldState extends State<ChatTextField> {
           ? CupertinoTextField(
             minLines: widget.minLines,
             maxLines: widget.maxLines,
-            controller: _controller,
+            controller: widget.controller,
             autofocus: widget.autofocus,
             focusNode: widget.focusNode,
             // onSubmitted: onSubmitted,
@@ -134,7 +129,7 @@ class _ChatTextFieldState extends State<ChatTextField> {
           : TextField(
             minLines: widget.minLines,
             maxLines: widget.maxLines,
-            controller: _controller,
+            controller: widget.controller,
             autofocus: widget.autofocus,
             focusNode: widget.focusNode,
             textInputAction: widget.textInputAction,

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import 'attachments.dart';
@@ -33,6 +34,14 @@ abstract class LlmProvider {
 
   /// A [ValueNotifier] that indicates whether to show a status message in the history
   final ValueNotifier<bool> listenableShowStatusMessage;
+
+  /// The text input controller
+  final TextEditingController textInputController = TextEditingController(
+    text: 'inizio',
+  );
+
+  /// The input focus node
+  final FocusNode inputFocusNode = FocusNode();
 
   /// This stream writes the generated text directly into the message widget
   /// with `status == streaming`.
@@ -153,6 +162,8 @@ abstract class LlmProvider {
     listenableHistory.dispose();
     listenableStatus.dispose();
     listenableShowStatusMessage.dispose();
+    textInputController.dispose();
+    inputFocusNode.dispose();
   }
 }
 

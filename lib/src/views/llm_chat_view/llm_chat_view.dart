@@ -261,6 +261,9 @@ class _LlmChatViewState extends State<LlmChatView>
                     ),
                   ),
                   ChatInput(
+                    focusNode: widget.viewModel.provider.inputFocusNode,
+                    textController:
+                        widget.viewModel.provider.textInputController,
                     initialMessage: _initialMessage,
                     autofocus: widget.viewModel.suggestions.isEmpty,
                     onCancelEdit:

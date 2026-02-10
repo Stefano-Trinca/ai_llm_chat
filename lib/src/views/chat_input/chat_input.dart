@@ -12,7 +12,6 @@ import 'package:waveform_recorder/waveform_recorder.dart';
 
 import '../../chat_view_model/chat_view_model.dart';
 import '../../chat_view_model/chat_view_model_provider.dart';
-import '../../dialogs/adaptive_snack_bar/adaptive_snack_bar.dart';
 import '../../providers/interface/attachments.dart';
 import '../../providers/interface/chat_message.dart';
 import '../../styles/styles.dart';
@@ -35,6 +34,8 @@ class ChatInput extends StatefulWidget {
   /// [onCancelMessage] and [onCancelStt] are optional callbacks for cancelling
   /// message submission or speech-to-text translation respectively.
   const ChatInput({
+    required this.textController,
+    required this.focusNode,
     required this.onSendMessage,
     required this.onTranslateStt,
     this.initialMessage,
@@ -52,6 +53,12 @@ class ChatInput extends StatefulWidget {
          !(onCancelEdit != null && initialMessage == null),
          'Cannot cancel edit of a message if no initial message is provided',
        );
+
+  /// The text editing controller for the input field.
+  final TextEditingController textController;
+
+  /// Focus node for the input field.
+  final FocusNode focusNode;
 
   /// Callback function triggered when a message is sent.
   ///
@@ -115,9 +122,9 @@ class _ChatInputState extends State<ChatInput> {
   // - the reason we need to request focus in the implementation of the separate
   //   submit/cancel button is because  clicking on another widget when the
   //   TextField is focused causes it to lose focus (as it should)
-  final _focusNode = FocusNode();
+  // late final FocusNode _focusNode;
 
-  final _textController = TextEditingController();
+  // late final TextEditingController _textController;
   final _waveController = WaveformRecorderController();
   final _attachments = <Attachment>[];
 
@@ -137,7 +144,7 @@ class _ChatInputState extends State<ChatInput> {
   void didUpdateWidget(ChatInput oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.initialMessage != null) {
-      _textController.text = widget.initialMessage!.text ?? '';
+      widget.textController.text = widget.initialMessage!.text ?? '';
       _attachments.clear();
       _attachments.addAll(widget.initialMessage!.attachments);
     }
@@ -146,8 +153,8 @@ class _ChatInputState extends State<ChatInput> {
   @override
   void dispose() {
     _waveController.dispose();
-    _focusNode.dispose();
-    _textController.dispose();
+    // _focusNode.dispose();
+    // _textController.dispose();
     super.dispose();
   }
 
@@ -166,7 +173,7 @@ class _ChatInputState extends State<ChatInput> {
             ),
             if (_attachments.isNotEmpty) const SizedBox(height: 6),
             ValueListenableBuilder(
-              valueListenable: _textController,
+              valueListenable: widget.textController,
               builder:
                   (context, value, child) => ListenableBuilder(
                     listenable: _waveController,
@@ -178,8 +185,8 @@ class _ChatInputState extends State<ChatInput> {
                           onCancelEdit: widget.onCancelEdit,
                           onRecordingStopped: onRecordingStopped,
                           onSubmitPrompt: onSubmitPrompt,
-                          textController: _textController,
-                          focusNode: _focusNode,
+                          textController: widget.textController,
+                          focusNode: widget.focusNode,
                           autofocus: widget.autofocus,
                           inputState: _inputState,
                           cancelButtonStyle: _chatStyle!.cancelButtonStyle!,
@@ -289,7 +296,7 @@ class _ChatInputState extends State<ChatInput> {
     if (_waveController.isRecording) return InputState.isRecording;
     if (widget.onCancelMessage != null) return InputState.canCancelPrompt;
     if (widget.onCancelStt != null) return InputState.canCancelStt;
-    if (_textController.text.trim().isEmpty) {
+    if (widget.textController.text.trim().isEmpty) {
       return _viewModel!.enableVoiceNotes
           ? InputState.canStt
           : InputState.disabled;
@@ -301,19 +308,19 @@ class _ChatInputState extends State<ChatInput> {
     assert(_inputState == InputState.canSubmitPrompt);
 
     // the mobile vkb can still cause a submission even if there is no text
-    final text = _textController.text.trim();
+    final text = widget.textController.text.trim();
     if (text.isEmpty) return;
 
     widget.onSendMessage(text, List.from(_attachments));
     _attachments.clear();
-    _textController.clear();
-    _focusNode.requestFocus();
+    widget.textController.clear();
+    widget.focusNode.requestFocus();
   }
 
   void onCancelPrompt() {
     assert(_inputState == InputState.canCancelPrompt);
     widget.onCancelMessage!();
-    _focusNode.requestFocus();
+    widget.focusNode.requestFocus();
   }
 
   Future<void> onStartRecording() async {
