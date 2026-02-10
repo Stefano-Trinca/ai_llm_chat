@@ -1,5 +1,4 @@
 import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
-import 'package:ai_llm_chat/src/chat_view_model/chat_view_model_client.dart';
 import 'package:ai_llm_chat/src/views/chat_message_view/adaptive_copy_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -204,7 +203,7 @@ class _MessageView extends StatelessWidget {
 
     // Handle status messages (loading state)
     if (text.isEmpty && message.statusMessage.isNotEmpty) {
-      return _StatusMessage(messageStyle: messageStyle);
+      return _StatusMessage(message: message, messageStyle: messageStyle);
     }
 
     // Build message content
@@ -242,40 +241,30 @@ class _MessageView extends StatelessWidget {
 
 /// Widget separato per il messaggio di stato - evita rebuild quando non necessario
 class _StatusMessage extends StatelessWidget {
-  const _StatusMessage({required this.messageStyle});
+  const _StatusMessage({required this.message, required this.messageStyle});
 
+  final ChatMessage message;
   final MessageStyle messageStyle;
 
   @override
   Widget build(BuildContext context) {
-    return ChatViewModelClient(
-      builder: (context, viewModel, child) {
-        return ValueListenableBuilder(
-          valueListenable: viewModel.provider.listenableStatus,
-          builder: (context, status, child) {
-            final baseColor =
-                messageStyle.statusMessageShimmerColors?.$1 ??
-                context.colorScheme.onSurfaceVariant.withAlpha(120);
-            final highlightColor =
-                messageStyle.statusMessageShimmerColors?.$2 ??
-                context.colorScheme.onSurfaceVariant;
+    final baseColor =
+        messageStyle.statusMessageShimmerColors?.$1 ??
+        context.colorScheme.onSurfaceVariant.withAlpha(120);
+    final highlightColor =
+        messageStyle.statusMessageShimmerColors?.$2 ??
+        context.colorScheme.onSurfaceVariant;
 
-            return Padding(
-              padding: (messageStyle.padding ?? EdgeInsets.zero).copyWith(
-                bottom: 24,
-              ),
-              child: Shimmer.fromColors(
-                baseColor: baseColor,
-                highlightColor: highlightColor,
-                child: Text(
-                  viewModel.provider.statusMessage,
-                  style: messageStyle.statusMessageStyle,
-                ),
-              ),
-            );
-          },
-        );
-      },
+    return Padding(
+      padding: (messageStyle.padding ?? EdgeInsets.zero).copyWith(bottom: 24),
+      child: Shimmer.fromColors(
+        baseColor: baseColor,
+        highlightColor: highlightColor,
+        child: Text(
+          message.statusMessage,
+          style: messageStyle.statusMessageStyle,
+        ),
+      ),
     );
   }
 }

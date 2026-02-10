@@ -64,8 +64,7 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
               valueListenable: viewModel.provider.listenableShowStatusMessage,
               builder: (context, showStatusMessage, child) {
                 final showWelcomeMessage = viewModel.welcomeMessage != null;
-                final showSuggestions =
-                    viewModel.suggestions.isNotEmpty && history.isEmpty;
+                // final showSuggestions = viewModel.suggestions.isNotEmpty && history.isEmpty;
                 final source = [
                   if (showWelcomeMessage)
                     ChatMessage(
@@ -96,18 +95,19 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
                   child: ListView.builder(
                     reverse: true,
                     padding: viewModel.style?.chatViewPadding,
-                    itemCount: source.length + (showSuggestions ? 1 : 0),
+                    // itemCount: source.length + (showSuggestions ? 1 : 0),
+                    itemCount: source.length,
                     itemBuilder: (context, index) {
-                      if (showSuggestions) {
-                        index -= showWelcomeMessage ? 1 : 0;
-                        if (index ==
-                            source.length - (showWelcomeMessage ? 2 : 0)) {
-                          return ChatSuggestionsView(
-                            suggestions: viewModel.suggestions,
-                            onSelectSuggestion: widget.onSelectSuggestion,
-                          );
-                        }
-                      }
+                      // if (showSuggestions) {
+                      //   index -= showWelcomeMessage ? 1 : 0;
+                      //   if (index ==
+                      //       source.length - (showWelcomeMessage ? 2 : 0)) {
+                      //     return ChatSuggestionsView(
+                      //       suggestions: viewModel.suggestions,
+                      //       onSelectSuggestion: widget.onSelectSuggestion,
+                      //     );
+                      //   }
+                      // }
                       final messageIndex = source.length - index - 1;
                       final message = source[messageIndex];
                       final isLastUserMessage =

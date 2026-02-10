@@ -67,8 +67,8 @@ class _AttachmentActionBarState extends State<AttachmentActionBar> {
               ),
               onPressed: () => _onCamera(),
               child: Text(
-                chatStyle.cameraButtonStyle!.text!,
-                style: chatStyle.cameraButtonStyle!.textStyle,
+                chatStyle.cameraButtonStyle!.label!,
+                // style: chatStyle.cameraButtonStyle!.textStyle,
               ),
             ),
           MenuItemButton(
@@ -78,8 +78,8 @@ class _AttachmentActionBarState extends State<AttachmentActionBar> {
             ),
             onPressed: () => _onGallery(),
             child: Text(
-              chatStyle.galleryButtonStyle!.text!,
-              style: chatStyle.galleryButtonStyle!.textStyle,
+              chatStyle.galleryButtonStyle!.label!,
+              // style: chatStyle.galleryButtonStyle!.textStyle,
             ),
           ),
           MenuItemButton(
@@ -89,8 +89,8 @@ class _AttachmentActionBarState extends State<AttachmentActionBar> {
             ),
             onPressed: () => _onFile(),
             child: Text(
-              chatStyle.attachFileButtonStyle!.text!,
-              style: chatStyle.attachFileButtonStyle!.textStyle,
+              chatStyle.attachFileButtonStyle!.label!,
+              // style: chatStyle.attachFileButtonStyle!.textStyle,
             ),
           ),
         ],

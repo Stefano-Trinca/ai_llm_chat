@@ -14,6 +14,8 @@ class ChatView extends StatelessWidget {
       enableAttachments: false,
       enableVoiceNotes: true,
       enableCancel: true,
+      suggestions: ['Suggerimento 1', 'Suggerimento 2'],
+
       // advertisingMessage:
       //     'Questo assistente può commettere errori. Non fidarti ciecamente delle sue risposte.',
       style: LlmChatViewStyle.context(context).copyWith(

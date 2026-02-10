@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/material.dart' show Tooltip;
+import 'package:flutter/material.dart' show IconButton;
 import 'package:flutter/widgets.dart';
 
 import '../styles/action_button_style.dart';
-import '../utility.dart';
 
 /// A button widget with an icon.
 ///
@@ -37,25 +36,32 @@ class ActionButton extends StatelessWidget {
   final double size;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onPressed,
-    child: Container(
-      width: size,
-      height: size,
-      decoration: style.iconDecoration,
-      // tooltips aren't a thing in cupertino, so skip it
-      child:
-          isCupertinoApp(context)
-              ? Icon(style.icon, color: style.iconColor, size: size * 0.6)
-              : Tooltip(
-                message: style.text,
-                // textStyle: style.textStyle,
-                child: Icon(
-                  style.icon,
-                  color: style.iconColor,
-                  size: size * 0.6,
-                ),
-              ),
-    ),
+  Widget build(BuildContext context) => IconButton(
+    style: style.buttonStyle,
+    onPressed: onPressed,
+    tooltip: style.label,
+    icon: Icon(style.icon, color: style.iconColor),
   );
+
+  // GestureDetector(
+  //   onTap: onPressed,
+  //   child: Container(
+  //     width: size,
+  //     height: size,
+  //     decoration: style.iconDecoration,
+  //     // tooltips aren't a thing in cupertino, so skip it
+  //     child:
+  //         isCupertinoApp(context)
+  //             ? Icon(style.icon, color: style.iconColor, size: size * 0.6)
+  //             : Tooltip(
+  //               message: style.text,
+  //               // textStyle: style.textStyle,
+  //               child: Icon(
+  //                 style.icon,
+  //                 color: style.iconColor,
+  //                 size: size * 0.6,
+  //               ),
+  //             ),
+  //   ),
+  // );
 }

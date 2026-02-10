@@ -210,7 +210,7 @@ class _ChatInputState extends State<ChatInput> {
                         padding: const EdgeInsets.only(right: 8),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          spacing: 8,
+                          spacing: 4,
                           children: [
                             if (_inputState == InputState.isRecording)
                               _stopRecordingButton(context),

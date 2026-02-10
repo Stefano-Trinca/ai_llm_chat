@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class TestLlmProvider extends LlmProvider {
   TestLlmProvider() {
     history = sampleMessages.toList();
+    // history = [];
   }
 
   String _tempText = '';

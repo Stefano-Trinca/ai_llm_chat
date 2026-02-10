@@ -16,9 +16,8 @@ class ActionButtonStyle {
   const ActionButtonStyle({
     this.icon,
     this.iconColor,
-    this.iconDecoration,
-    this.text,
-    this.textStyle,
+    this.label,
+    this.buttonStyle,
   });
 
   /// Resolves the provided [style] with the [defaultStyle].
@@ -36,9 +35,8 @@ class ActionButtonStyle {
   }) => ActionButtonStyle(
     icon: style?.icon ?? defaultStyle.icon,
     iconColor: style?.iconColor ?? defaultStyle.iconColor,
-    iconDecoration: style?.iconDecoration ?? defaultStyle.iconDecoration,
-    text: style?.text ?? defaultStyle.text,
-    textStyle: style?.textStyle ?? defaultStyle.textStyle,
+    label: style?.label ?? defaultStyle.label,
+    buttonStyle: style?.buttonStyle ?? defaultStyle.buttonStyle,
   );
 
   /// Provides default style for icon buttons.
@@ -118,13 +116,7 @@ class ActionButtonStyle {
         text = 'Close Menu';
     }
 
-    return ActionButtonStyle(
-      icon: icon,
-      iconColor: color,
-      iconDecoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-      text: text,
-      textStyle: textStyle,
-    );
+    return ActionButtonStyle(icon: icon, iconColor: color, label: text);
   }
 
   /// Provides a style for icon buttons using the current Theme.
@@ -135,92 +127,82 @@ class ActionButtonStyle {
     final theme = Theme.of(context);
     IconData icon;
     Color color = theme.iconTheme.color ?? theme.colorScheme.onSurface;
-    Color bgColor =
-        theme.buttonTheme.colorScheme?.background ?? Colors.transparent;
-    String text;
-    TextStyle? textStyle = theme.textTheme.bodyMedium;
+    String tooltip;
+    ButtonStyle buttonStyle = IconButton.styleFrom();
     switch (type) {
       case ActionButtonType.add:
         icon = ToolkitIcons.add;
-        text = 'Add Attachment';
+        tooltip = 'Add Attachment';
         break;
       case ActionButtonType.attachFile:
         icon = ToolkitIcons.attach_file;
-        text = 'Attach File';
+        tooltip = 'Attach File';
         break;
       case ActionButtonType.camera:
         icon = ToolkitIcons.camera_alt;
-        text = 'Take Photo';
+        tooltip = 'Take Photo';
         break;
       case ActionButtonType.stop:
         icon = ToolkitIcons.stop;
-        text = 'Stop';
+        tooltip = 'Stop';
         break;
       case ActionButtonType.close:
         icon = ToolkitIcons.close;
         color = theme.colorScheme.onPrimary;
-        bgColor = theme.colorScheme.primary;
-        text = 'Close';
+        buttonStyle = buttonStyle.copyWith(
+          backgroundColor: WidgetStateProperty.all(theme.colorScheme.primary),
+        );
+        tooltip = 'Close';
         break;
       case ActionButtonType.cancel:
         icon = ToolkitIcons.close;
-        text = 'Cancel';
+        tooltip = 'Cancel';
         break;
       case ActionButtonType.copy:
         icon = Icons.copy;
-        text = 'Copy to Clipboard';
+        tooltip = 'Copy to Clipboard';
         break;
       case ActionButtonType.edit:
         icon = ToolkitIcons.edit;
-        text = 'Edit Message';
+        tooltip = 'Edit Message';
         break;
       case ActionButtonType.gallery:
         icon = ToolkitIcons.image;
-        text = 'Attach Image';
-        textStyle = theme.textTheme.bodyMedium;
+        tooltip = 'Attach Image';
         break;
       case ActionButtonType.record:
         icon = ToolkitIcons.mic;
-        text = 'Record Audio';
+        tooltip = 'Record Audio';
         break;
       case ActionButtonType.submit:
         icon = ToolkitIcons.submit_icon;
-        text = 'Submit Message';
+        tooltip = 'Submit Message';
         break;
       case ActionButtonType.disabled:
         icon = ToolkitIcons.submit_icon;
-        bgColor = Colors.transparent;
-        text = '';
+        tooltip = '';
         break;
       case ActionButtonType.closeMenu:
         icon = ToolkitIcons.close;
-        text = 'Close Menu';
+        tooltip = 'Close Menu';
         break;
     }
 
-    return ActionButtonStyle(
-      icon: icon,
-      iconColor: color,
-      iconDecoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-      text: text,
-      textStyle: textStyle,
-    );
+    return ActionButtonStyle(icon: icon, iconColor: color, label: tooltip);
   }
 
   /// Returns a copy of this [ActionButtonStyle] with the given fields replaced by new values.
   ActionButtonStyle copyWith({
     IconData? icon,
     Color? iconColor,
-    Decoration? iconDecoration,
-    String? text,
-    TextStyle? textStyle,
+    String? label,
+    ButtonStyle? buttonStyle,
   }) {
     return ActionButtonStyle(
       icon: icon ?? this.icon,
       iconColor: iconColor ?? this.iconColor,
-      iconDecoration: iconDecoration ?? this.iconDecoration,
-      text: text ?? this.text,
-      textStyle: textStyle ?? this.textStyle,
+      label: label ?? this.label,
+      buttonStyle: buttonStyle ?? this.buttonStyle,
     );
   }
 
@@ -230,12 +212,11 @@ class ActionButtonStyle {
   /// The color of the icon.
   final Color? iconColor;
 
-  /// The decoration for the icon.
-  final Decoration? iconDecoration;
-
   /// The tooltip for the icon button (could be menu item text or a tooltip).
-  final String? text;
+  final String? label;
 
-  /// The text style of the tooltip.
-  final TextStyle? textStyle;
+  /// IconButton Style
+  ///
+  /// use IconButton.styleFrom to create a ButtonStyle for IconButton
+  final ButtonStyle? buttonStyle;
 }
