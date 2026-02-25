@@ -52,9 +52,7 @@ abstract class LlmProvider {
   final ValueNotifier<bool> listenableShowStatusMessage;
 
   /// The text input controller
-  final TextEditingController textInputController = TextEditingController(
-    text: 'inizio',
-  );
+  final TextEditingController textInputController = TextEditingController();
 
   /// The input focus node
   final FocusNode inputFocusNode = FocusNode();
