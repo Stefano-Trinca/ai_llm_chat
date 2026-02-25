@@ -1,5 +1,4 @@
 import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
-import 'package:ai_llm_chat_example/_sample_messages.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +32,11 @@ class TestLlmProvider extends LlmProvider {
   }
 
   @override
-  void onSendMessage(String prompt, Iterable<Attachment> attachments) async {
+  void onSendMessage(
+    String prompt, {
+    Iterable<Attachment> attachments = const [],
+    Map<String, dynamic>? extradata,
+  }) async {
     // set the user message
     final userMessage = ChatMessage(
       id: UniqueKey().toString(),
@@ -76,11 +79,15 @@ class TestLlmProvider extends LlmProvider {
 
   @override
   void onSelectSuggestion(String suggestion) {
-    onSendMessage(suggestion, []);
+    onSendMessage(suggestion);
   }
 
   @override
-  void onSendAudio(XFile audioFile, Iterable<Attachment> attachments) {
+  void onSendAudio(
+    XFile audioFile, {
+    Iterable<Attachment> attachments = const [],
+    Map<String, dynamic>? extradata,
+  }) {
     // TODO: implement onSendAudio
   }
 }

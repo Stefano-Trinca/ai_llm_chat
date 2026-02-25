@@ -9,6 +9,22 @@ import 'package:flutter/foundation.dart';
 import 'attachments.dart';
 import 'chat_message.dart';
 
+/// A callback type for sending a message with optional attachments and extra data.
+typedef SendMessageCallback =
+    void Function(
+      String prompt, {
+      Iterable<Attachment> attachments,
+      Map<String, dynamic>? extradata,
+    });
+
+/// A callback type for sending an audio file with optional attachments and extra data.
+typedef SendAudioCallback =
+    void Function(
+      XFile audioFile, {
+      Iterable<Attachment> attachments,
+      Map<String, dynamic>? extradata,
+    });
+
 /// An abstract class representing a Language Model (LLM) provider.
 ///
 /// This class defines the interface for interacting with different LLM
@@ -67,7 +83,14 @@ abstract class LlmProvider {
   /// [attachments] is an optional iterable of [Attachment] objects that can
   /// be included with the prompt. These attachments can be images, files, or
   /// links that provide additional context for the LLM.
-  void onSendMessage(String prompt, Iterable<Attachment> attachments);
+  /// [extradata] is an optional map of additional data that can be included with the message.
+  /// This can be used to provide extra context or information to the LLM provider
+  /// when processing the message.
+  void onSendMessage(
+    String prompt, {
+    Iterable<Attachment> attachments = const [],
+    Map<String, dynamic>? extradata,
+  });
 
   // Sends an audio file to the LLM provider with optional attachments.
   ///
@@ -77,7 +100,14 @@ abstract class LlmProvider {
   /// [attachments] is an optional iterable of [Attachment] objects that can
   /// be included with the audio file. These attachments can be images, files, or
   /// links that provide additional context for the LLM.
-  void onSendAudio(XFile audioFile, Iterable<Attachment> attachments);
+  /// [extradata] is an optional map of additional data that can be included with the message.
+  /// This can be used to provide extra context or information to the LLM provider
+  /// when processing the message.
+  void onSendAudio(
+    XFile audioFile, {
+    Iterable<Attachment> attachments = const [],
+    Map<String, dynamic>? extradata,
+  });
 
   /// Called when a suggestion is selected by the user.
   ///

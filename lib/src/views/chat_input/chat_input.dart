@@ -10,11 +10,9 @@ import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:waveform_recorder/waveform_recorder.dart';
 
+import '../../../flutter_ai_toolkit.dart';
 import '../../chat_view_model/chat_view_model.dart';
 import '../../chat_view_model/chat_view_model_provider.dart';
-import '../../providers/interface/attachments.dart';
-import '../../providers/interface/chat_message.dart';
-import '../../styles/styles.dart';
 import 'attachments_action_bar.dart';
 import 'attachments_view.dart';
 import 'input_button.dart';
@@ -64,14 +62,13 @@ class ChatInput extends StatefulWidget {
   ///
   /// Takes a [String] for the message text and [`Iterable<Attachment>`] for
   /// any attachments.
-  final void Function(String, Iterable<Attachment>) onSendMessage;
+  final SendMessageCallback onSendMessage;
 
   /// Callback function triggered when speech-to-text translation is requested.
   ///
   /// Takes an [XFile] representing the audio file to be translated and the
   /// current attachments.
-  final void Function(XFile file, Iterable<Attachment> attachments)
-  onTranslateStt;
+  final SendAudioCallback onTranslateStt;
 
   /// The initial message to populate the input field, if any.
   final ChatMessage? initialMessage;
@@ -311,7 +308,7 @@ class _ChatInputState extends State<ChatInput> {
     final text = widget.textController.text.trim();
     if (text.isEmpty) return;
 
-    widget.onSendMessage(text, List.from(_attachments));
+    widget.onSendMessage(text, attachments: List.from(_attachments));
     _attachments.clear();
     widget.textController.clear();
     widget.focusNode.requestFocus();
@@ -340,7 +337,7 @@ class _ChatInputState extends State<ChatInput> {
     }
 
     // Pass current attachments to onTranslateStt
-    widget.onTranslateStt(file, List.from(_attachments));
+    widget.onTranslateStt(file, attachments: List.from(_attachments));
   }
 
   Future<void> onRecordingDelete() async {
