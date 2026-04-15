@@ -106,6 +106,29 @@ class ChatMessage {
     metadata: metadata ?? const {},
   );
 
+  /// Factory constructor for creating a system-originated message.
+  ///
+  /// [id] is the unique identifier for the message.
+  /// [text] is the content of the system message (can be null or empty).
+  /// [attachments] are any files or media attached to the message.
+  /// [headerMetadata] and [metadata] are optional metadata maps.
+  factory ChatMessage.system(
+    String id,
+    String? text, [
+    Iterable<Attachment> attachments = const [],
+    Map<String, dynamic>? headerMetadata,
+    Map<String, dynamic>? metadata,
+  ]) => ChatMessage(
+    id: id,
+    origin: MessageOrigin.system,
+    text: text,
+    status: '',
+    statusMessage: '',
+    attachments: attachments,
+    headerMetadata: headerMetadata ?? const {},
+    metadata: metadata ?? const {},
+  );
+
   /// Unique identifier for the message.
   final String id;
 

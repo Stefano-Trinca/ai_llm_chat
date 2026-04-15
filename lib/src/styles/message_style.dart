@@ -148,6 +148,42 @@ class MessageStyle {
     );
   }
 
+  /// Provides a default style for system messages.
+  factory MessageStyle.defaultSystem() => MessageStyle(
+    showAvatar: false,
+    decoration: BoxDecoration(
+      color: ToolkitColors.outline,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    padding: _defaultPaddingSystem,
+    textStyle: ToolkitTextStyles.label.copyWith(
+      color: ToolkitColors.greyBackground,
+    ),
+    statusMessageStyle: ToolkitTextStyles.label,
+    statusMessageShimmerColors: (Colors.grey, Colors.white),
+  );
+
+  /// Provides a system message style based on the current theme context.
+  factory MessageStyle.contextSystem(BuildContext context) {
+    final theme = Theme.of(context);
+    return MessageStyle(
+      showAvatar: false,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      padding: _defaultPaddingSystem,
+      textStyle: theme.textTheme.labelSmall?.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
+      statusMessageStyle: theme.textTheme.labelSmall,
+      statusMessageShimmerColors: (
+        theme.colorScheme.onSurfaceVariant.withAlpha(120),
+        theme.colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+
   /// show the avatar for the message.
   final bool showAvatar;
 
@@ -187,6 +223,10 @@ class MessageStyle {
 
   static const EdgeInsets _defaultPaddingLLM = EdgeInsets.all(8);
   static const EdgeInsets _defaultPaddingUser = EdgeInsets.all(16);
+  static const EdgeInsets _defaultPaddingSystem = EdgeInsets.symmetric(
+    horizontal: 12,
+    vertical: 6,
+  );
 
   /// Returns a copy of this MessageStyle with the given fields replaced.
   MessageStyle copyWith({

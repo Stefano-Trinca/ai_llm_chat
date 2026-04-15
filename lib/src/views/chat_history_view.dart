@@ -10,6 +10,7 @@ import '../chat_view_model/chat_view_model_client.dart';
 import '../providers/interface/chat_message.dart';
 import '../providers/interface/message_origin.dart';
 import 'chat_message_view/llm_message_view.dart';
+import 'chat_message_view/system_message_view.dart';
 import 'chat_message_view/user_message_view.dart';
 
 /// A widget that displays a history of chat messages.
@@ -115,25 +116,24 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
                           messageIndex >= source.length - 2;
                       final canEdit =
                           isLastUserMessage && widget.onEditMessage != null;
-                      final isUser = message.origin.isUser;
 
                       return Padding(
                         padding: const EdgeInsets.only(top: 6),
-                        child:
-                            isUser
-                                ? UserMessageView(
-                                  message,
-                                  onEdit:
-                                      canEdit
-                                          ? () => widget.onEditMessage?.call(
-                                            message,
-                                          )
-                                          : null,
-                                )
-                                : LlmMessageView(
-                                  message,
-                                  isWelcomeMessage: messageIndex == 0,
-                                ),
+                        child: switch (message.origin) {
+                          MessageOrigin.user => UserMessageView(
+                            message,
+                            onEdit:
+                                canEdit
+                                    ? () =>
+                                        widget.onEditMessage?.call(message)
+                                    : null,
+                          ),
+                          MessageOrigin.system => SystemMessageView(message),
+                          MessageOrigin.llm => LlmMessageView(
+                            message,
+                            isWelcomeMessage: messageIndex == 0,
+                          ),
+                        },
                       );
                     },
                   ),

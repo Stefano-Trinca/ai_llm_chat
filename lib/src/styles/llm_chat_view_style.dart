@@ -19,6 +19,7 @@ class LlmChatViewStyle {
     this.progressIndicatorColor,
     this.userMessageStyle,
     this.llmMessageStyle,
+    this.systemMessageStyle,
     this.markdownBuilder,
     this.chatInputStyle,
     this.addButtonStyle,
@@ -67,6 +68,11 @@ class LlmChatViewStyle {
       llmMessageStyle: MessageStyle.resolve(
         style?.llmMessageStyle,
         defaultStyle: defaultStyle.llmMessageStyle,
+      ),
+      systemMessageStyle: MessageStyle.resolve(
+        style?.systemMessageStyle,
+        defaultStyle:
+            defaultStyle.systemMessageStyle ?? MessageStyle.defaultSystem(),
       ),
       markdownBuilder: style?.markdownBuilder ?? defaultStyle.markdownBuilder,
       chatInputStyle: ChatInputStyle.resolve(
@@ -151,6 +157,7 @@ class LlmChatViewStyle {
     progressIndicatorColor: ToolkitColors.black,
     userMessageStyle: MessageStyle.defaultUser(),
     llmMessageStyle: MessageStyle.defaultLLM(),
+    systemMessageStyle: MessageStyle.defaultSystem(),
 
     chatInputStyle: ChatInputStyle.defaultStyle(),
     addButtonStyle: ActionButtonStyle.defaultStyle(ActionButtonType.add),
@@ -188,6 +195,7 @@ class LlmChatViewStyle {
     progressIndicatorColor: Theme.of(context).colorScheme.onSurfaceVariant,
     userMessageStyle: MessageStyle.contextUser(context),
     llmMessageStyle: MessageStyle.contextLLM(context),
+    systemMessageStyle: MessageStyle.contextSystem(context),
     chatInputStyle: ChatInputStyle.context(context),
     addButtonStyle: ActionButtonStyle.context(context, ActionButtonType.add),
     stopButtonStyle: ActionButtonStyle.context(context, ActionButtonType.stop),
@@ -246,6 +254,7 @@ class LlmChatViewStyle {
     Color? progressIndicatorColor,
     MessageStyle? userMessageStyle,
     MessageStyle? llmMessageStyle,
+    MessageStyle? systemMessageStyle,
     MarkdownBody Function(BuildContext context, String text)? markdownBuilder,
     ChatInputStyle? chatInputStyle,
     ActionButtonStyle? addButtonStyle,
@@ -275,6 +284,7 @@ class LlmChatViewStyle {
           progressIndicatorColor ?? this.progressIndicatorColor,
       userMessageStyle: userMessageStyle ?? this.userMessageStyle,
       llmMessageStyle: llmMessageStyle ?? this.llmMessageStyle,
+      systemMessageStyle: systemMessageStyle ?? this.systemMessageStyle,
       chatInputStyle: chatInputStyle ?? this.chatInputStyle,
       addButtonStyle: addButtonStyle ?? this.addButtonStyle,
       attachFileButtonStyle:
@@ -323,6 +333,9 @@ class LlmChatViewStyle {
 
   /// Style for LLM messages.
   final MessageStyle? llmMessageStyle;
+
+  /// Style for system messages.
+  final MessageStyle? systemMessageStyle;
 
   /// Builder for rendering Markdown text.
   final MarkdownBody Function(BuildContext context, String text)?

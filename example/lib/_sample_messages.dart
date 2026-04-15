@@ -216,6 +216,25 @@ final List<ChatMessage> sampleMessages = [
   ),
   ChatMessage(
     id: '9',
+    origin: MessageOrigin.system,
+    // text: '',
+    text: 'Questo è un messaggio di sistema',
+    status: 'done',
+    statusMessage: 'Non sto ancora inviando nessuna stram',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '9',
+    origin: MessageOrigin.system,
+    // text: '',
+    text:
+        'Questo è un messaggio di sistema più lungo con maggiori dettagli che potrebbe essere più lungo dello spazio disponibile e mi serve per capire come risulta questo messaggio nello spazio che ha a disposizione',
+    status: 'done',
+    statusMessage: 'Non sto ancora inviando nessuna stram',
+    attachments: const [],
+  ),
+  ChatMessage(
+    id: '9',
     origin: MessageOrigin.llm,
     text: 'questo è il risultato',
     statusMessage: 'Sto elaborando la tua richiesta...',

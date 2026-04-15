@@ -1,11 +1,12 @@
 import 'package:ai_llm_chat/flutter_ai_toolkit.dart';
+import 'package:ai_llm_chat_example/_sample_messages.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 
 class TestLlmProvider extends LlmProvider {
   TestLlmProvider() {
-    // history = sampleMessages.toList();
-    history = [];
+    history = sampleMessages.toList();
+    // history = [];
   }
 
   String _tempText = '';
